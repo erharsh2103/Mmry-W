@@ -1,6 +1,7 @@
 import type { LatLon } from "../utils/geo.js";
 
 export type LocationEventKind = "out" | "in" | "sos";
+export type LocationNotificationKind = "geofence_out" | "location_update" | "geofence_in";
 
 export interface SafeZoneRecord {
   patientId: string;
@@ -11,6 +12,14 @@ export interface SafeZoneRecord {
   lastFixEnc: string | null;
   lastFixAccuracyM: number | null;
   lastFixAt: Date | null;
+  lastLocationAlertAt: Date | null;
+}
+
+export interface AlertContact {
+  id: string;
+  label: string;
+  phone: string;
+  enabled: boolean;
 }
 
 export interface LocationEventRecord {

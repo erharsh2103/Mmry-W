@@ -44,6 +44,23 @@
   place-items: center;
 }
 
+.modeButton {
+  min-height: 44px;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.modeButton:hover {
+  background: var(--green-bright);
+}
+
 .nav {
   flex: none;
   z-index: 40;

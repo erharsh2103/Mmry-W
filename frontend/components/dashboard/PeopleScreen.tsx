@@ -5,7 +5,7 @@ import { api, type ApiError } from "@/lib/api";
 import { EMOJIS } from "@/lib/games/data";
 import { personText } from "@/lib/people";
 import { useI18n } from "@/hooks/useI18n";
-import { useCurrentPatient } from "@/hooks/usePatient";
+import { useCurrentPatient, usePatient } from "@/hooks/usePatient";
 import { usePeople } from "@/hooks/usePatientData";
 import { useSpeech } from "@/hooks/useSpeech";
 import { Field } from "@/components/ui/Field";
@@ -26,6 +26,7 @@ const BLANK = { name: "", relation: "", note: "", emoji: "👩", isPlace: false 
 
 export function PeopleScreen() {
   const patient = useCurrentPatient();
+  const { unlocked } = usePatient();
   const { t, translatorFor } = useI18n();
   const { speak, speechLang } = useSpeech();
   const people = usePeople();
@@ -101,10 +102,12 @@ export function PeopleScreen() {
                   <Icon name="volume_up" size={28} />
                   {t("pplWho")}
                 </button>
-                <button type="button" className={ui.danger} style={{ borderRadius: 8, borderColor: "var(--red)", color: "var(--red)" }} onClick={() => void remove(person.id)}>
-                  <Icon name="delete" size={26} />
-                  {t("remove")}
-                </button>
+                {unlocked && (
+                  <button type="button" className={ui.danger} style={{ borderRadius: 8, borderColor: "var(--red)", color: "var(--red)" }} onClick={() => void remove(person.id)}>
+                    <Icon name="delete" size={26} />
+                    {t("remove")}
+                  </button>
+                )}
               </article>
             );
           })}
@@ -131,7 +134,7 @@ export function PeopleScreen() {
         </div>
       </section>
 
-      {open ? (
+      {unlocked && open ? (
         <form className={ui.card} style={{ marginTop: 20 }} onSubmit={save} noValidate>
           <h2 style={{ margin: "0 0 14px", fontSize: "1.2em", fontWeight: 800 }}>{t("addPerson")}</h2>
           <div className={styles.emojiRow} role="radiogroup" aria-label={t("addPerson")}>
@@ -173,11 +176,11 @@ export function PeopleScreen() {
             {busy ? t("authWorking") : t("save")}
           </button>
         </form>
-      ) : (
+      ) : unlocked ? (
         <button type="button" className={styles.addButton} onClick={() => setOpen(true)}>
           ＋ {t("addPerson")}
         </button>
-      )}
+      ) : null}
     </div>
   );
 }

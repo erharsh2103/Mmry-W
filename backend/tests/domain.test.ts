@@ -64,11 +64,10 @@ describe("geofence", () => {
     assert.ok(Math.abs(bearingDeg(home, ne) - 45) < 3);
   });
 
-  it("applies hysteresis so the boundary does not flicker", () => {
-    assert.equal(isOutside(510, 500, 20, false), false, "inside grace, was inside");
-    assert.equal(isOutside(540, 500, 20, false), true, "past grace");
-    assert.equal(isOutside(490, 500, 20, true), true, "just inside, was outside");
-    assert.equal(isOutside(460, 500, 20, true), false, "well inside");
+  it("uses the configured radius as the exact boundary", () => {
+    assert.equal(isOutside(500, 500, 150, false), false, "boundary is inside");
+    assert.equal(isOutside(500.1, 500, 150, false), true, "just outside the radius");
+    assert.equal(isOutside(499.9, 500, 1, true), false, "just inside the radius");
   });
 });
 

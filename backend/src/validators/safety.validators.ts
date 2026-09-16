@@ -22,6 +22,13 @@ export const reportFixBody = z.object({
   accuracyM: z.number().min(0).max(100_000),
 });
 
+export const alertContactBody = z.object({
+  label: cleanText(80).pipe(z.string().min(1)),
+  phone: z.string().max(32).regex(/^[0-9+()\-\s]+$/, "Phone may contain only digits, spaces, +, - and brackets"),
+});
+
+export const alertContactParams = z.object({ patientId: uuid, contactId: uuid });
+
 export const classifyIntentBody = z.object({
   text: cleanText(500).pipe(z.string().min(1, "Nothing was said")),
   lang: langCode,

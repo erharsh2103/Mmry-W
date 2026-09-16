@@ -14,7 +14,7 @@ const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "clear", "0", "back"]
 export function PinDialog({ onCancel }: { onCancel: () => void }) {
   const { t } = useI18n();
   const { say } = useSpeech();
-  const { unlock } = usePatient();
+  const { patient, unlock, setPin } = usePatient();
   const [entry, setEntry] = useState("");
   const [error, setError] = useState<"" | "wrong" | "locked" | "network">("");
   const [busy, setBusy] = useState(false);
@@ -33,7 +33,8 @@ export function PinDialog({ onCancel }: { onCancel: () => void }) {
     if (next.length < 4) return;
     setBusy(true);
     try {
-      await unlock(next);
+      if (patient?.hasPin) await unlock(next);
+      else await setPin(next);
     } catch (err) {
       const e = err as ApiError;
       setError(e.status === 429 ? "locked" : e.isNetwork ? "network" : "wrong");

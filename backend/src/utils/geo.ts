@@ -27,13 +27,8 @@ export function bearingDeg(from: LatLon, to: LatLon): number {
   return (Math.atan2(y, x) / RAD + 360) % 360;
 }
 
-/*
- * Hysteresis keeps a patient sitting on the boundary from generating a stream
- * of alerts: leaving needs radius + grace, coming back needs radius - grace.
- * Grace tracks the fix's own reported accuracy, so a poor GPS lock can never
- * invent a breach.
- */
-export function isOutside(distance: number, radius: number, accuracy: number, wasOutside: boolean): boolean {
-  const grace = Math.min(Math.max(accuracy || 0, 25), 150);
-  return wasOutside ? distance > Math.max(0, radius - grace) : distance > radius + grace;
+/* The configured radius is the boundary. GPS accuracy is reported separately
+ * and must not silently move the safe-zone edge shown on the map. */
+export function isOutside(distance: number, radius: number, _accuracy: number, _wasOutside: boolean): boolean {
+  return distance > radius;
 }

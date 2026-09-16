@@ -160,6 +160,13 @@ export interface MindCheckAnswer {
 
 export type LocationEventKind = "out" | "in" | "sos";
 
+export interface AlertContact {
+  id: string;
+  label: string;
+  phone: string;
+  enabled: boolean;
+}
+
 export interface SafetyState {
   zone: { home: LatLon | null; radiusM: number; armed: boolean; trackingEnabled: boolean };
   lastFix: (LatLon & { accuracyM: number; at: string }) | null;

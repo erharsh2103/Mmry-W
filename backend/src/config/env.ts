@@ -47,6 +47,19 @@ const schema = z.object({
   AI_SERVICE_URL: z.url().default("http://127.0.0.1:8000"),
   AI_SERVICE_TOKEN: secret("AI_SERVICE_TOKEN", 32),
   AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().min(200).max(30000).default(4000),
+
+  TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
+  TWILIO_AUTH_TOKEN: z.string().min(1).optional(),
+  TWILIO_FROM_NUMBER: z.string().min(1).optional(),
+}).superRefine((value, ctx) => {
+  const fields = [value.TWILIO_ACCOUNT_SID, value.TWILIO_AUTH_TOKEN, value.TWILIO_FROM_NUMBER];
+  if (fields.some(Boolean) && fields.some((field) => !field)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["TWILIO_ACCOUNT_SID"],
+      message: "TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and TWILIO_FROM_NUMBER must be configured together",
+    });
+  }
 });
 
 export type Env = z.infer<typeof schema>;

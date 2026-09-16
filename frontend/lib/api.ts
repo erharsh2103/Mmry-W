@@ -5,6 +5,7 @@
 import { CSRF_HEADER, getAccessToken, refreshSession, setSession } from "@/lib/auth";
 import type {
   ApiErrorBody,
+  AlertContact,
   Insights,
   IntentOutcome,
   MindCheck,
@@ -144,6 +145,10 @@ export const api = {
     reportFix: (id: string, fix: { lat: number; lon: number; accuracyM: number }) =>
       send<{ transition: "out" | "in" | null; state: SafetyState }>("POST", `${p(id)}/safety/fixes`, fix),
     sos: (id: string) => send<SafetyState>("POST", `${p(id)}/safety/sos`),
+    contacts: (id: string) => send<{ contacts: AlertContact[] }>("GET", `${p(id)}/safety/contacts`),
+    addContact: (id: string, body: { label: string; phone: string }) =>
+      send<{ contact: AlertContact }>("POST", `${p(id)}/safety/contacts`, body),
+    removeContact: (id: string, contactId: string) => send<void>("DELETE", `${p(id)}/safety/contacts/${encodeURIComponent(contactId)}`),
   },
 
   assistant: {

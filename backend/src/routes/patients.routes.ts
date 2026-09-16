@@ -3,7 +3,7 @@ import { activityController, assistantController, insightsController } from "../
 import { patientsController, peopleController, routineController } from "../controllers/patients.controller.js";
 import { safetyController } from "../controllers/safety.controller.js";
 import { authenticate } from "../middleware/authenticate.js";
-import { requirePatientAccess } from "../middleware/authorize.js";
+import { requirePatientAccess, requireRole } from "../middleware/authorize.js";
 import { pinLimiter } from "../middleware/rateLimits.js";
 import { validate } from "../middleware/validate.js";
 import {
@@ -23,11 +23,12 @@ import {
   updatePatientBody,
   verifyPinBody,
 } from "../validators/patient.validators.js";
-import { classifyIntentBody, reportFixBody, setHomeBody, updateZoneBody } from "../validators/safety.validators.js";
+import { alertContactBody, alertContactParams, classifyIntentBody, reportFixBody, setHomeBody, updateZoneBody } from "../validators/safety.validators.js";
 
 /* Every route here requires a signed-in caregiver. */
 export const patientRoutes = Router();
 patientRoutes.use(authenticate);
+patientRoutes.use(requireRole("caregiver", "admin"));
 
 patientRoutes.get("/", patientsController.list);
 patientRoutes.post("/", validate("body", createPatientBody), patientsController.create);
@@ -65,5 +66,8 @@ one.patch("/safety/zone", validate("body", updateZoneBody), safetyController.upd
 one.put("/safety/home", validate("body", setHomeBody), safetyController.setHome);
 one.post("/safety/fixes", validate("body", reportFixBody), safetyController.reportFix);
 one.post("/safety/sos", safetyController.sos);
+one.get("/safety/contacts", safetyController.contacts);
+one.post("/safety/contacts", validate("body", alertContactBody), safetyController.addContact);
+one.delete("/safety/contacts/:contactId", validate("params", alertContactParams), safetyController.removeContact);
 
 one.post("/assistant/intent", validate("body", classifyIntentBody), assistantController.classify);

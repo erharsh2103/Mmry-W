@@ -1,0 +1,358 @@
+MMRY PROJECT IMPLEMENTATION SUMMARY
+====================================
+
+This file summarizes the features, fixes, permission changes, and integrations
+implemented during the project work.
+
+
+1. SAATHI VOICE ASSISTANT
+--------------------------
+
+Main files:
+- frontend/hooks/useSpeech.tsx
+- frontend/components/dashboard/TalkScreen.tsx
+- frontend/lib/assistant/conversation.ts
+- backend/src/services/assistant.service.ts
+- backend/src/services/aiClient.service.ts
+- ai/api/routes.py
+- ai/inference/intent.py
+
+How it works:
+1. The browser microphone uses the Web Speech API.
+2. Speech is converted into text by the browser.
+3. TalkScreen sends the transcript to the backend.
+4. The backend calls the Python AI service for intent classification.
+5. The intent is converted into a localized response.
+6. Browser speech synthesis reads the response aloud when voice is enabled.
+
+Supported intent categories include:
+- medicine
+- today or schedule
+- people
+- games
+- mind check
+- unknown
+
+Voice fix:
+- Previously, transcripts with confidence below 0.6 were discarded.
+- Browsers can return valid text with confidence 0 or a low score.
+- The app now processes every non-empty transcript.
+- Low-confidence text is processed and can receive a confirmation message.
+- Empty transcripts still request the user to try again.
+
+Fallback behavior:
+- If the Python AI service is unavailable, the backend uses keyword matching.
+- The response includes whether the model or rule-based fallback answered.
+
+
+2. AI SERVICES
+--------------
+
+Python AI service files:
+- ai/main.py
+- ai/api/routes.py
+- ai/inference/intent.py
+- ai/inference/difficulty.py
+- ai/models/intent_classifier.joblib
+- ai/models/difficulty_model.keras
+
+AI endpoints:
+- GET /health
+- POST /v1/intent
+- POST /v1/difficulty
+
+The backend communicates with the AI service using AI_SERVICE_URL and
+AI_SERVICE_TOKEN. The AI service normally runs on port 8000 in Docker.
+
+The AI service is used for:
+- Voice intent classification.
+- Game difficulty recommendations based on player history.
+
+
+3. SAFE ZONE AND LOCATION TRACKING
+----------------------------------
+
+Main files:
+- frontend/hooks/useLocationTracking.ts
+- frontend/components/dashboard/SafetyPanel.tsx
+- frontend/components/dashboard/LocationMap.tsx
+- backend/src/services/safety.service.ts
+- backend/src/utils/geo.ts
+- backend/src/repositories/safety.repository.ts
+- database/postgresql/migrations/005_safety.sql
+
+How tracking works:
+1. Caregiver enables location tracking.
+2. The browser calls navigator.geolocation.watchPosition().
+3. Position updates are sent to the backend.
+4. The backend encrypts coordinates before storing them.
+5. The backend calculates distance and bearing from the home location.
+6. The caregiver screen refreshes safety data periodically.
+7. The map updates the patient marker using the newest stored location.
+
+Current tracking limits:
+- A location is sent at most every 30 seconds unless the patient moves more
+  than 25 meters.
+- The browser page must remain open.
+- Mobile browsers may pause tracking when the page is backgrounded or the phone
+  is locked.
+- A dedicated Android app would be needed for reliable background tracking.
+
+
+4. EXACT SAFE-ZONE RADIUS
+-------------------------
+
+File:
+- backend/src/utils/geo.ts
+
+Radius options:
+- 200 meters
+- 500 meters
+- 1000 meters
+- 2000 meters
+
+The configured radius is now the exact geofence boundary.
+
+Behavior:
+- distance <= radius means inside.
+- distance > radius means outside.
+- GPS accuracy is displayed separately but does not silently expand or shrink
+  the configured radius.
+- The map circle and backend geofence use the same radius.
+
+A domain test was updated to verify the exact boundary behavior.
+
+
+5. SET HOME LOCATION FIX
+------------------------
+
+File:
+- frontend/components/dashboard/SafetyPanel.tsx
+
+The Set this spot as home button now:
+1. Requests a fresh GPS position.
+2. Sends that position to the backend.
+3. Saves the fresh position as the safe-zone home.
+4. Refreshes the safety state.
+5. Shows the saved home coordinates.
+
+Previously, the button required an older GPS fix and could appear to do
+nothing when no previous position existed.
+
+
+6. SAVED PLACES FIX
+-------------------
+
+Files:
+- frontend/components/dashboard/SafetyPanel.tsx
+- backend/src/services/routine.service.ts
+- backend/src/repositories/routine.repository.ts
+
+The Save this spot action now:
+1. Requests a fresh GPS position.
+2. Stores that position as the latest patient fix.
+3. Pins the position to the selected saved place.
+4. Updates the saved place immediately in the interface.
+
+The Use as home action now:
+- Sets the selected saved place coordinates as the safe-zone home.
+- Refreshes the safety state.
+- Shows a Home marker beside the active saved place.
+
+
+7. GOOGLE MAPS INTEGRATION
+--------------------------
+
+Main files:
+- frontend/components/dashboard/LocationMap.tsx
+- frontend/next.config.ts
+- frontend/components/dashboard/screens.module.css
+- frontend/package.json
+
+Changes:
+- Replaced the old CSS compass/radar with Google Maps JavaScript API.
+- Removed Leaflet.
+- Added @googlemaps/js-api-loader.
+- Added Google Maps TypeScript definitions.
+- Added a home marker.
+- Added a patient marker.
+- Added an exact radius circle.
+- Added map controls, zoom, map type, and fullscreen controls.
+- Added responsive map sizing.
+- Added Google Maps CSP permissions.
+- Added graceful error handling when Google Maps cannot load.
+
+Configuration:
+- The frontend reads NEXT_PUBLIC_GOOGLE_MAPS_API_KEY from the workspace root
+  .env file through frontend/next.config.ts.
+- Google Cloud must have Maps JavaScript API enabled.
+- Google Cloud billing must be enabled.
+- The browser key should allow http://localhost:3000/* during development.
+- The key should be restricted by website origin and API usage.
+
+If Google Maps fails, the app displays an inline error instead of crashing.
+
+
+8. CAREGIVER AND PATIENT PERMISSIONS
+------------------------------------
+
+Main files:
+- backend/src/routes/patients.routes.ts
+- backend/src/middleware/authorize.ts
+- frontend/components/dashboard/PinGate.tsx
+- frontend/components/dashboard/PinDialog.tsx
+- frontend/components/navbar/Header.tsx
+- frontend/components/sidebar/Sidebar.tsx
+- frontend/components/navbar/BottomNav.tsx
+- frontend/components/dashboard/PeopleScreen.tsx
+- frontend/hooks/usePatient.tsx
+
+Permission behavior:
+- Backend patient routes require caregiver or admin authentication.
+- Caregiver screens are protected by the caregiver PIN gate.
+- Direct URLs to Care, Analytics, Profile, Settings, and caregiver actions are
+  still protected by the PIN gate.
+- If no PIN exists, the first caregiver access requires creating a four-digit
+  caregiver PIN.
+- The PIN is verified by the backend.
+- Caregiver mode has Lock caregiver area and Sign out controls.
+- Patient mode has a separate Caregiver entry button.
+
+Important architecture note:
+- The current project has caregiver/admin accounts only.
+- The patient experience runs inside the caregiver session as a patient mode.
+- A completely independent patient login would require a separate patient role,
+  identity, login flow, session type, and backend authorization model.
+
+
+9. MY PEOPLE PERMISSIONS
+-------------------------
+
+Files:
+- frontend/components/dashboard/PeopleScreen.tsx
+- frontend/app/dashboard/people/page.tsx
+- frontend/components/sidebar/Sidebar.tsx
+- frontend/components/dashboard/HomeScreen.tsx
+
+Patient mode can:
+- Open My People from the home screen.
+- Open My People from the main navigation.
+- View names, relationships, notes, and saved information.
+- Use the voice interaction for a person.
+
+Patient mode cannot:
+- Add people.
+- Remove people.
+- Edit people information.
+
+Caregiver mode can:
+- Add people.
+- Remove people.
+- Manage saved places.
+- Use saved places as the safe-zone home.
+
+
+10. AUTOMATIC LOCATION ALERTS
+-----------------------------
+
+Database migrations:
+- database/postgresql/migrations/007_location_notifications.sql
+- database/postgresql/migrations/008_notification_delivery.sql
+
+Backend files:
+- backend/src/services/safety.service.ts
+- backend/src/services/notification.service.ts
+- backend/src/repositories/safety.repository.ts
+- backend/src/models/safety.ts
+
+Implemented behavior:
+- Multiple encrypted alert contacts can be stored for a patient.
+- A safe-zone exit creates one notification per enabled contact.
+- A safe-zone return creates one notification per enabled contact.
+- While outside, a location update is queued no more than once every five
+  minutes per patient/contact flow.
+- Locations and phone numbers are encrypted at rest.
+- Notifications are stored in an outbox before delivery.
+- The worker claims pending notifications with database locking.
+- Successful notifications become sent.
+- Failed notifications retry up to five times.
+
+Alert contact APIs:
+- GET /api/v1/patients/:id/safety/contacts
+- POST /api/v1/patients/:id/safety/contacts
+- DELETE /api/v1/patients/:id/safety/contacts/:contactId
+
+Indian phone handling:
+- 9800000045 becomes +919800000045.
+- 919800000045 becomes +919800000045.
+- +919800000045 remains +919800000045.
+- Invalid Indian mobile numbers are rejected.
+
+
+11. TWILIO INTEGRATION
+----------------------
+
+Files:
+- backend/src/services/notification.service.ts
+- backend/src/config/env.ts
+- backend/src/server.ts
+- docs/DEPLOYMENT.md
+
+Environment variables:
+- TWILIO_ACCOUNT_SID
+- TWILIO_AUTH_TOKEN
+- TWILIO_FROM_NUMBER
+
+Behavior:
+- The backend checks for complete Twilio configuration.
+- The notification worker runs every 15 seconds.
+- Twilio SMS messages contain the patient name and a Google Maps location link.
+- Trial accounts can send only to verified destination numbers.
+
+Current limitation:
+- The Twilio trial account rejected the test Indian number because it was not
+  verified as an allowed trial recipient.
+- Twilio sent error 572002: the number must be added as a verified recipient.
+- The Twilio credentials themselves were accepted.
+
+TextBee was considered as a free alternative. It uses an Android phone as the
+SMS gateway and offers a limited free plan, but it has not replaced the Twilio
+adapter in the code yet.
+
+
+12. DATABASE AND SECURITY
+-------------------------
+
+Database setup applied:
+- Migration 007: alert contacts and notification outbox.
+- Migration 008: notification delivery states and in-progress locking.
+
+Sensitive data protection:
+- Phone numbers are encrypted.
+- GPS coordinates are encrypted.
+- Patient vault data is encrypted.
+- Talk transcripts are encrypted.
+- Twilio/Auth/API secrets are kept in .env and must not be committed.
+
+
+13. VALIDATION COMPLETED
+-------------------------
+
+Frontend:
+- TypeScript checks passed.
+- 28 frontend tests passed.
+- Next.js production build passed.
+
+Backend:
+- TypeScript checks passed.
+- 21 backend tests passed.
+- Database migrations applied successfully.
+- Exact geofence boundary test added and passed.
+
+Known environment requirements:
+- PostgreSQL and MongoDB must be running.
+- The backend must be running on port 4000.
+- The frontend must be running on port 3000.
+- The Python AI service normally runs on port 8000.
+- Google Maps requires a valid configured browser key.
+- SMS delivery requires a configured provider and eligible recipient.

@@ -6,14 +6,22 @@
  * they reach the database.
  */
 import { withTransaction } from "../config/postgres.js";
-import type { LocationEventKind, SafeZoneRecord, SafetyState } from "../models/safety.js";
+import type { AlertContact, LocationEventKind, SafeZoneRecord, SafetyState } from "../models/safety.js";
 import { peopleRepository } from "../repositories/routine.repository.js";
-import { locationEventsRepository, safeZonesRepository } from "../repositories/safety.repository.js";
-import { decryptJson, encryptJson } from "../utils/crypto.js";
+import { alertContactsRepository, locationEventsRepository, locationNotificationsRepository, safeZonesRepository } from "../repositories/safety.repository.js";
+import { decrypt, decryptJson, encrypt, encryptJson } from "../utils/crypto.js";
 import { bearingDeg, distanceM, isOutside, type LatLon } from "../utils/geo.js";
 import { badRequest, notFound } from "../utils/httpError.js";
 
 const EVENT_HISTORY = 25;
+const LOCATION_UPDATE_INTERVAL_MS = 5 * 60_000;
+
+function indianMobile(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  const national = digits.startsWith("91") && digits.length === 12 ? digits.slice(2) : digits;
+  if (!/^[6-9]\d{9}$/.test(national)) throw badRequest("Use a valid Indian mobile number");
+  return `+91${national}`;
+}
 
 async function buildState(patientId: string, zone: SafeZoneRecord): Promise<SafetyState> {
   const home = decryptJson<LatLon>(zone.homeEnc);
@@ -82,12 +90,59 @@ export const safetyService = {
       const distance = distanceM(position, home);
       const wasOutside = (await locationEventsRepository.lastCrossing(db, patientId)) === "out";
       const outside = isOutside(distance, zone.radiusM, fix.accuracyM, wasOutside);
-      if (outside === wasOutside) return null;
-      const kind: LocationEventKind = outside ? "out" : "in";
-      await locationEventsRepository.insert(db, patientId, { kind, distanceM: Math.round(distance), positionEnc });
-      return kind;
+      const contacts = await alertContactsRepository.listEnabled(db, patientId);
+      if (outside !== wasOutside) {
+        const kind: LocationEventKind = outside ? "out" : "in";
+        const event = await locationEventsRepository.insert(db, patientId, { kind, distanceM: Math.round(distance), positionEnc });
+        for (const contact of contacts) {
+          await locationNotificationsRepository.enqueue(db, {
+            patientId,
+            eventId: event.id,
+            contactId: contact.id,
+            kind: outside ? "geofence_out" : "geofence_in",
+            recipientEnc: contact.phone_enc,
+            locationEnc: positionEnc,
+          });
+        }
+        if (contacts.length) await safeZonesRepository.markLocationAlert(db, patientId);
+        return kind;
+      }
+
+      if (outside && contacts.length && (!zone.lastLocationAlertAt || Date.now() - zone.lastLocationAlertAt.getTime() >= LOCATION_UPDATE_INTERVAL_MS)) {
+        for (const contact of contacts) {
+          await locationNotificationsRepository.enqueue(db, {
+            patientId,
+            eventId: null,
+            contactId: contact.id,
+            kind: "location_update",
+            recipientEnc: contact.phone_enc,
+            locationEnc: positionEnc,
+          });
+        }
+        await safeZonesRepository.markLocationAlert(db, patientId);
+      }
+      return null;
     });
     return { transition, state: await this.state(patientId) };
+  },
+
+  async contacts(patientId: string): Promise<AlertContact[]> {
+    return (await alertContactsRepository.list(patientId)).map((contact) => ({
+      id: contact.id,
+      label: contact.label,
+      phone: decrypt(contact.phone_enc),
+      enabled: contact.enabled,
+    }));
+  },
+
+  async addContact(patientId: string, label: string, phone: string): Promise<AlertContact> {
+    const normalized = indianMobile(phone);
+    const contact = await alertContactsRepository.add(patientId, label, encrypt(normalized));
+    return { id: contact.id, label: contact.label, phone: normalized, enabled: contact.enabled };
+  },
+
+  async removeContact(patientId: string, contactId: string): Promise<void> {
+    if (!(await alertContactsRepository.remove(patientId, contactId))) throw notFound("Alert contact not found");
   },
 
   async recordSos(patientId: string): Promise<SafetyState> {

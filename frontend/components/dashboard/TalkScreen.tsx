@@ -83,8 +83,11 @@ export function TalkScreen() {
       if (kind === "no-speech") say("vAgain");
       return;
     }
-    if (heard.confidence < 0.6) {
-      setExchange({ heard: heard.text, reply: t("vAgain"), confirm: "", source: null });
+    // Some browsers report 0 or a low confidence even when a transcript was
+    // produced. Let the classifier use the text; the response will ask for
+    // confirmation when confidence is below the normal threshold.
+    if (!heard.text.trim()) {
+      setExchange({ heard: "", reply: t("vAgain"), confirm: "", source: null });
       return say("vAgain");
     }
     setBusy(true);
