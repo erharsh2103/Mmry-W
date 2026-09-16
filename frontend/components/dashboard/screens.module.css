@@ -591,7 +591,14 @@
   color: var(--navy);
 }
 
-.mic[aria-pressed="true"] {
+/* Waiting for the browser (permission prompt): a still, dashed ring, no pulse. */
+.mic[data-state="waiting"] {
+  border-color: var(--muted-2);
+  border-style: dashed;
+}
+
+/* Only a truly open microphone pulses. */
+.mic[data-state="listening"] {
   border-color: var(--navy);
   animation: pulse 1.2s ease-in-out infinite;
 }

@@ -20,7 +20,10 @@ export interface Heard {
   confidence: number;
 }
 
-export type ListenError = "no-speech" | "no-mic" | "unsupported" | "failed";
+export type ListenError = "no-speech" | "no-mic" | "unsupported" | "failed" | "aborted";
+
+/* idle -> waiting (browser may be asking for mic permission) -> listening (mic is open) */
+export type MicState = "idle" | "waiting" | "listening";
 
 interface SpeechValue {
   voices: VoiceLike[];
@@ -32,6 +35,9 @@ interface SpeechValue {
   say: (key: string, vars?: Vars) => void;
   cancel: () => void;
   listen: () => Promise<Heard>;
+  stopListening: () => void;
+  micState: MicState;
+  /* true only once the microphone is actually open */
   listening: boolean;
   recognitionSupported: boolean;
 }
@@ -51,6 +57,7 @@ type Recognition = {
   maxAlternatives: number;
   onresult: ((e: { results: { 0: { 0: { transcript: string; confidence: number } } } }) => void) | null;
   onerror: ((e: { error?: string }) => void) | null;
+  onaudiostart: (() => void) | null;
   onend: (() => void) | null;
   start: () => void;
   abort: () => void;
@@ -59,7 +66,7 @@ type Recognition = {
 export function SpeechProvider({ voiceOn, voicePref, voiceRate, children }: Props) {
   const { lang, ensure, translatorFor } = useI18n();
   const [voices, setVoices] = useState<VoiceLike[]>([]);
-  const [listening, setListening] = useState(false);
+  const [micState, setMicState] = useState<MicState>("idle");
   const recognition = useRef<Recognition | null>(null);
 
   useEffect(() => {
@@ -121,9 +128,17 @@ export function SpeechProvider({ voiceOn, voicePref, voiceRate, children }: Prop
 
   const listen = useCallback(
     () =>
-      new Promise<Heard>((resolve, reject) => {
+      new Promise<Heard>(async (resolve, reject) => {
         if (!recognitionCtor) return reject("unsupported" satisfies ListenError);
         cancel();
+        // A microphone the user already blocked: say so at once instead of
+        // appearing to listen to nothing.
+        try {
+          const status = await navigator.permissions?.query({ name: "microphone" as PermissionName });
+          if (status?.state === "denied") return reject("no-mic" satisfies ListenError);
+        } catch {
+          /* Permissions API unavailable for microphone in this browser; recognition will ask. */
+        }
         try {
           const rec = new recognitionCtor();
           rec.lang = VOICE_LANGS[lang] ?? "en-IN";
@@ -140,32 +155,45 @@ export function SpeechProvider({ voiceOn, voicePref, voiceRate, children }: Prop
             settled = true;
             const kind = e?.error ?? "";
             reject(
-              (kind === "no-speech"
+              (kind === "aborted"
+                ? "aborted"
+                : kind === "no-speech"
                 ? "no-speech"
                 : kind === "not-allowed" || kind === "service-not-allowed" || kind === "audio-capture"
                   ? "no-mic"
                   : "failed") satisfies ListenError,
             );
           };
+          // Fires only once the microphone is really open, i.e. after any permission prompt.
+          rec.onaudiostart = () => setMicState("listening");
           rec.onend = () => {
-            setListening(false);
+            setMicState("idle");
+            recognition.current = null;
             if (!settled) reject("no-speech" satisfies ListenError);
           };
-          setListening(true);
+          setMicState("waiting");
           rec.start();
-        } catch {
-          setListening(false);
+        } catch (err) {
+          console.warn("[mmry] speech recognition could not start:", err);
+          setMicState("idle");
+          recognition.current = null;
           reject("no-mic" satisfies ListenError);
         }
       }),
     [recognitionCtor, lang, cancel],
   );
 
+  const stopListening = useCallback(() => {
+    recognition.current?.abort();
+  }, []);
+
   useEffect(() => () => recognition.current?.abort(), []);
 
+  const listening = micState === "listening";
+
   const value = useMemo<SpeechValue>(
-    () => ({ voices, resolved, speechLang, voiceOn, speak, say, cancel, listen, listening, recognitionSupported: !!recognitionCtor }),
-    [voices, resolved, speechLang, voiceOn, speak, say, cancel, listen, listening, recognitionCtor],
+    () => ({ voices, resolved, speechLang, voiceOn, speak, say, cancel, listen, stopListening, micState, listening, recognitionSupported: !!recognitionCtor }),
+    [voices, resolved, speechLang, voiceOn, speak, say, cancel, listen, stopListening, micState, listening, recognitionCtor],
   );
   return <SpeechContext.Provider value={value}>{children}</SpeechContext.Provider>;
 }

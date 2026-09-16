@@ -32,7 +32,7 @@ export function TalkScreen() {
   const router = useRouter();
   const { patient, update } = usePatient();
   const { t, translatorFor } = useI18n();
-  const { say, speak, cancel, listen, listening, voiceOn, speechLang } = useSpeech();
+  const { say, speak, cancel, listen, stopListening, micState, voiceOn, speechLang } = useSpeech();
   const tasks = useTasks();
   const people = usePeople();
   const [node, setNode] = useState<ConvoNodeId>("start");
@@ -67,13 +67,16 @@ export function TalkScreen() {
   };
 
   const onMic = async () => {
-    if (listening || busy) return;
+    if (busy) return;
+    // A second tap while waiting or listening cancels.
+    if (micState !== "idle") return stopListening();
     setExchange(EMPTY);
     let heard;
     try {
       heard = await listen();
     } catch (err) {
       const kind = err as ListenError;
+      if (kind === "aborted") return;
       const reply = kind === "no-speech" ? t("vAgain") : kind === "no-mic" ? t("vNoMic") : t("vNoListen");
       const confirm = kind === "unsupported" ? t("vCauseNoSR") : kind === "failed" ? t("vCauseBrowser", { kind: "network" }) : "";
       setExchange({ heard: "", reply, confirm, source: null });
@@ -104,6 +107,7 @@ export function TalkScreen() {
   };
 
   const convo = CONVO[node];
+  const micLabel = t(micState === "listening" ? "vListening" : micState === "waiting" ? "vMicWaiting" : busy ? "authWorking" : "vTapToSpeak");
 
   return (
     <div className={ui.screen}>
@@ -150,11 +154,11 @@ export function TalkScreen() {
 
       <div>
       <div style={{ marginTop: 24, display: "grid", placeItems: "center" }}>
-        <button type="button" className={styles.mic} aria-pressed={listening} aria-label={t(listening ? "vListening" : "vTapToSpeak")} onClick={() => void onMic()} disabled={busy}>
+        <button type="button" className={styles.mic} data-state={micState} aria-pressed={micState !== "idle"} aria-label={micLabel} onClick={() => void onMic()} disabled={busy}>
           <Icon name="mic" size={68} />
         </button>
         <p style={{ margin: "14px 0 0", fontWeight: 800, fontSize: "1.15em" }} aria-live="polite">
-          {t(listening ? "vListening" : "vTapToSpeak")}
+          {micLabel}
         </p>
       </div>
 

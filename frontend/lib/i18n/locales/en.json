@@ -522,5 +522,6 @@
  "talkRule": "understood by keyword match",
  "stTextSize": "Text size",
  "liveUpdated": "Updated {t}",
- "liveRefreshing": "Updating…"
+ "liveRefreshing": "Updating…",
+ "vMicWaiting": "Allow the microphone to start"
 }

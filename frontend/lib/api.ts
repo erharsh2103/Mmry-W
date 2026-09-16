@@ -68,7 +68,15 @@ async function send<T>(method: Method, path: string, body?: unknown, retried = f
 
   if (res.status === 204) return undefined as T;
   const text = await res.text();
-  const json = text ? (JSON.parse(text) as unknown) : undefined;
+  let json: unknown;
+  try {
+    json = text ? JSON.parse(text) : undefined;
+  } catch {
+    // Not the API talking: typically the frontend server could not reach the
+    // backend and answered with a plain-text error page. Report it like any
+    // other connection failure instead of surfacing a JSON parse error.
+    throw new ApiError(0, "network", `API unavailable (${res.status})`);
+  }
   if (!res.ok) {
     const err = (json as ApiErrorBody | undefined)?.error;
     throw new ApiError(res.status, err?.code ?? "error", err?.message ?? res.statusText, err?.details);
