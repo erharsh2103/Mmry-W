@@ -1,0 +1,137 @@
+.metrics {
+  margin-top: 22px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.metric {
+  background: var(--white);
+  border: 2px solid var(--navy);
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.metricLabel {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.95em;
+}
+
+.metricValue {
+  margin: 6px 0 12px;
+  font-size: 2em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.metricSuffix {
+  font-size: 0.95em;
+  color: var(--muted);
+}
+
+.twoUp {
+  margin-top: 18px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.trendValue {
+  margin: 8px 0 0;
+  font-size: 2em;
+  font-weight: 800;
+}
+
+.bars {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 92px;
+}
+
+.bar {
+  flex: 1;
+  border-radius: 6px 6px 3px 3px;
+  background: var(--green);
+  min-height: 8px;
+}
+
+.bar[data-low="true"] {
+  background: var(--navy);
+}
+
+.insight {
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  background: var(--cream-2);
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.daily {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.dayCol {
+  flex: 1 0 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  gap: 4px;
+}
+
+.dayBar {
+  width: 100%;
+  border-radius: 4px 4px 2px 2px;
+  background: var(--green);
+}
+
+.dayBar[data-empty="true"] {
+  background: var(--stone-3);
+  height: 4px !important;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.95em;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 10px 6px;
+  border-top: 2px solid var(--line-soft);
+}
+
+.table th {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.legend {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.9em;
+  font-weight: 600;
+}

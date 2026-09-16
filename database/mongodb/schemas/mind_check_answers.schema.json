@@ -1,0 +1,28 @@
+{
+  "$comment": "Per-question answers of one mind check. PostgreSQL mind_checks holds the per-area scores; this holds the question-level trail used to explain them.",
+  "bsonType": "object",
+  "required": ["patientId", "mindCheckId", "steps", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": { "bsonType": "objectId" },
+    "patientId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "mindCheckId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "steps": {
+      "bsonType": "array",
+      "maxItems": 50,
+      "items": {
+        "bsonType": "object",
+        "required": ["area", "question", "kind", "score", "ms"],
+        "additionalProperties": false,
+        "properties": {
+          "area": { "enum": ["memory", "attention", "recognition", "recall", "reasoning", "orientation"] },
+          "question": { "bsonType": "string", "maxLength": 40 },
+          "kind": { "enum": ["choice", "multi"] },
+          "score": { "bsonType": ["double", "int"], "minimum": 0, "maximum": 1 },
+          "ms": { "bsonType": "int", "minimum": 0 }
+        }
+      }
+    },
+    "createdAt": { "bsonType": "date" }
+  }
+}

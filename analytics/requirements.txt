@@ -1,0 +1,10 @@
+# Mmry analytics - Python 3.12
+pandas==2.2.3
+numpy==1.26.4
+scipy==1.14.1
+psycopg[binary]==3.3.5
+pymongo==4.17.0
+streamlit==1.64.0
+
+# Tests
+pytest==9.1.1

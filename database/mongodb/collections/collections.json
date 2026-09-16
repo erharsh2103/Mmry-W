@@ -1,0 +1,37 @@
+{
+  "$comment": "Collection definitions applied by `npm run db:mongo:init` (backend/src/utils/mongoInit.ts). Each validator is loaded from ../schemas. Idempotent: existing collections are updated with collMod.",
+  "collections": [
+    {
+      "name": "game_events",
+      "schema": "game_events.schema.json",
+      "indexes": [
+        { "name": "session_unique", "key": { "sessionId": 1 }, "unique": true },
+        { "name": "patient_time", "key": { "patientId": 1, "createdAt": -1 } }
+      ]
+    },
+    {
+      "name": "mind_check_answers",
+      "schema": "mind_check_answers.schema.json",
+      "indexes": [
+        { "name": "check_unique", "key": { "mindCheckId": 1 }, "unique": true },
+        { "name": "patient_time", "key": { "patientId": 1, "createdAt": -1 } }
+      ]
+    },
+    {
+      "name": "assistant_turns",
+      "schema": "assistant_turns.schema.json",
+      "indexes": [
+        { "name": "patient_time", "key": { "patientId": 1, "createdAt": -1 } },
+        { "name": "retention_180d", "key": { "createdAt": 1 }, "expireAfterSeconds": 15552000 }
+      ]
+    },
+    {
+      "name": "ai_inference_logs",
+      "schema": "ai_inference_logs.schema.json",
+      "indexes": [
+        { "name": "task_time", "key": { "task": 1, "createdAt": -1 } },
+        { "name": "retention_90d", "key": { "createdAt": 1 }, "expireAfterSeconds": 7776000 }
+      ]
+    }
+  ]
+}

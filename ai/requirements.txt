@@ -1,0 +1,15 @@
+# Mmry AI service - Python 3.12
+# Serving
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.5
+
+# Machine learning
+tensorflow==2.17.0
+scikit-learn==1.5.2
+numpy==1.26.4
+joblib==1.4.2
+
+# Tests
+pytest==9.1.1
+httpx==0.28.1

@@ -1,0 +1,162 @@
+# Mmry - full stack
+#
+#   cp .env.example .env   (or: node scripts/generate-env.mjs)
+#   docker compose up -d --build
+#
+# Only the frontend is published on all interfaces. Databases, the API, the AI
+# service and the analytics dashboard bind to 127.0.0.1 so they are reachable
+# from this machine for development but not from the network. In production,
+# put a TLS-terminating reverse proxy in front of `frontend` and remove the
+# 127.0.0.1 port mappings entirely.
+
+name: mmry
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  postgres:
+    <<: *restart
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_OWNER_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_OWNER_PASSWORD}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
+      POSTGRES_ANALYTICS_USER: ${POSTGRES_ANALYTICS_USER}
+      POSTGRES_ANALYTICS_PASSWORD: ${POSTGRES_ANALYTICS_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/postgres-init-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mongodb:
+    <<: *restart
+    image: mongo:8.0
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_APP_USER: ${MONGO_APP_USER}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
+      MONGO_ANALYTICS_USER: ${MONGO_ANALYTICS_USER}
+      MONGO_ANALYTICS_PASSWORD: ${MONGO_ANALYTICS_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+      - ./scripts/mongo-init-users.sh:/docker-entrypoint-initdb.d/10-users.sh:ro
+    ports:
+      - "127.0.0.1:${MONGO_PORT:-27017}:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # One-shot: PostgreSQL migrations, repeatable schema, seeds, grants and the
+  # MongoDB validators/indexes. Runs with the owner accounts, then exits.
+  db-setup:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["node", "dist/utils/setupDatabases.js"]
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      MONGO_HOST: mongodb
+      MONGO_PORT: "27017"
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongodb: { condition: service_healthy }
+    restart: "no"
+
+  ai:
+    <<: *restart
+    build:
+      context: ./ai
+    env_file: .env
+    ports:
+      - "127.0.0.1:${AI_SERVICE_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    <<: *restart
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      MONGO_HOST: mongodb
+      MONGO_PORT: "27017"
+      AI_SERVICE_URL: http://ai:8000
+    depends_on:
+      db-setup: { condition: service_completed_successfully }
+      ai: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-4000}:4000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  frontend:
+    <<: *restart
+    build:
+      context: ./frontend
+    environment:
+      NODE_ENV: production
+      BACKEND_INTERNAL_URL: http://backend:4000
+    depends_on:
+      backend: { condition: service_healthy }
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+
+  # Scheduled pipeline: recompute daily metrics every hour.
+  analytics-worker:
+    <<: *restart
+    build:
+      context: ./analytics
+    command: ["python", "-m", "data_processing.pipeline", "--loop", "3600"]
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      MONGO_HOST: mongodb
+      MONGO_PORT: "27017"
+    depends_on:
+      db-setup: { condition: service_completed_successfully }
+
+  analytics-dashboard:
+    <<: *restart
+    build:
+      context: ./analytics
+    command: ["streamlit", "run", "dashboards/app.py", "--server.port=8501", "--server.address=0.0.0.0", "--browser.gatherUsageStats=false"]
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      MONGO_HOST: mongodb
+      MONGO_PORT: "27017"
+    depends_on:
+      db-setup: { condition: service_completed_successfully }
+    ports:
+      - "127.0.0.1:${ANALYTICS_DASHBOARD_PORT:-8501}:8501"
+
+volumes:
+  postgres-data:
+  mongo-data:

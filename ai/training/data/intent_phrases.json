@@ -1,0 +1,1894 @@
+{
+ "samples": [
+  {
+   "text": "ৰাতিপুৱাৰ ঔষধ",
+   "intent": "med",
+   "source": "app:task_med_am:as"
+  },
+  {
+   "text": "আবেলিৰ ঔষধ",
+   "intent": "med",
+   "source": "app:task_med_pm:as"
+  },
+  {
+   "text": "সকালের ওষুধ",
+   "intent": "med",
+   "source": "app:task_med_am:bn"
+  },
+  {
+   "text": "সন্ধ্যার ওষুধ",
+   "intent": "med",
+   "source": "app:task_med_pm:bn"
+  },
+  {
+   "text": "फुंनि मेडिसिन",
+   "intent": "med",
+   "source": "app:task_med_am:brx"
+  },
+  {
+   "text": "बेलासिनि मेडिसिन",
+   "intent": "med",
+   "source": "app:task_med_pm:brx"
+  },
+  {
+   "text": "When is my medicine?",
+   "intent": "med",
+   "source": "app:chipMed:en"
+  },
+  {
+   "text": "About my medicine",
+   "intent": "med",
+   "source": "app:cvMed:en"
+  },
+  {
+   "text": "Morning medicine",
+   "intent": "med",
+   "source": "app:task_med_am:en"
+  },
+  {
+   "text": "Evening medicine",
+   "intent": "med",
+   "source": "app:task_med_pm:en"
+  },
+  {
+   "text": "સવારની દવા",
+   "intent": "med",
+   "source": "app:task_med_am:gu"
+  },
+  {
+   "text": "સાંજની દવા",
+   "intent": "med",
+   "source": "app:task_med_pm:gu"
+  },
+  {
+   "text": "मेरी दवा कब है?",
+   "intent": "med",
+   "source": "app:chipMed:hi"
+  },
+  {
+   "text": "मेरी दवा के बारे में",
+   "intent": "med",
+   "source": "app:cvMed:hi"
+  },
+  {
+   "text": "सुबह की दवा",
+   "intent": "med",
+   "source": "app:task_med_am:hi"
+  },
+  {
+   "text": "शाम की दवा",
+   "intent": "med",
+   "source": "app:task_med_pm:hi"
+  },
+  {
+   "text": "Dawai step-bneng",
+   "intent": "med",
+   "source": "app:task_med_am:kha"
+  },
+  {
+   "text": "Dawai mynjur",
+   "intent": "med",
+   "source": "app:task_med_pm:kha"
+  },
+  {
+   "text": "ಬೆಳಗಿನ ಔಷಧಿ",
+   "intent": "med",
+   "source": "app:task_med_am:kn"
+  },
+  {
+   "text": "ಸಂಜೆಯ ಔಷಧಿ",
+   "intent": "med",
+   "source": "app:task_med_pm:kn"
+  },
+  {
+   "text": "Zing damdawi",
+   "intent": "med",
+   "source": "app:task_med_am:lus"
+  },
+  {
+   "text": "Tlai damdawi",
+   "intent": "med",
+   "source": "app:task_med_pm:lus"
+  },
+  {
+   "text": "രാവിലെയുള്ള മരുന്ന്",
+   "intent": "med",
+   "source": "app:task_med_am:ml"
+  },
+  {
+   "text": "വൈകുന്നേരത്തെ മരുന്ന്",
+   "intent": "med",
+   "source": "app:task_med_pm:ml"
+  },
+  {
+   "text": "অয়ুকগী হিদাক",
+   "intent": "med",
+   "source": "app:task_med_am:mni"
+  },
+  {
+   "text": "নুমিদাংগী হিদাক",
+   "intent": "med",
+   "source": "app:task_med_pm:mni"
+  },
+  {
+   "text": "सकाळची औषधे",
+   "intent": "med",
+   "source": "app:task_med_am:mr"
+  },
+  {
+   "text": "संध्याकाळची औषधे",
+   "intent": "med",
+   "source": "app:task_med_pm:mr"
+  },
+  {
+   "text": "Bihan dawa",
+   "intent": "med",
+   "source": "app:task_med_am:nag"
+  },
+  {
+   "text": "Gudhuli dawa",
+   "intent": "med",
+   "source": "app:task_med_pm:nag"
+  },
+  {
+   "text": "बिहानको औषधि",
+   "intent": "med",
+   "source": "app:task_med_am:ne"
+  },
+  {
+   "text": "बेलुकाको औषधि",
+   "intent": "med",
+   "source": "app:task_med_pm:ne"
+  },
+  {
+   "text": "ସକାଳର ଔଷଧ",
+   "intent": "med",
+   "source": "app:task_med_am:or"
+  },
+  {
+   "text": "ସନ୍ଧ୍ୟାର ଔଷଧ",
+   "intent": "med",
+   "source": "app:task_med_pm:or"
+  },
+  {
+   "text": "ਸਵੇਰ ਦੀ ਦਵਾਈ",
+   "intent": "med",
+   "source": "app:task_med_am:pa"
+  },
+  {
+   "text": "ਸ਼ਾਮ ਦੀ ਦਵਾਈ",
+   "intent": "med",
+   "source": "app:task_med_pm:pa"
+  },
+  {
+   "text": "காலை மாத்திரை",
+   "intent": "med",
+   "source": "app:task_med_am:ta"
+  },
+  {
+   "text": "மாலை மாத்திரை",
+   "intent": "med",
+   "source": "app:task_med_pm:ta"
+  },
+  {
+   "text": "ఉదయం మందు",
+   "intent": "med",
+   "source": "app:task_med_am:te"
+  },
+  {
+   "text": "సాయంత్రం మందు",
+   "intent": "med",
+   "source": "app:task_med_pm:te"
+  },
+  {
+   "text": "صبح کی دوا",
+   "intent": "med",
+   "source": "app:task_med_am:ur"
+  },
+  {
+   "text": "شام کی دوا",
+   "intent": "med",
+   "source": "app:task_med_pm:ur"
+  },
+  {
+   "text": "दिनैनि थांखि",
+   "intent": "today",
+   "source": "app:dayTitle:brx"
+  },
+  {
+   "text": "What do I have to do today?",
+   "intent": "today",
+   "source": "app:chipToday:en"
+  },
+  {
+   "text": "What is left today",
+   "intent": "today",
+   "source": "app:cvToday:en"
+  },
+  {
+   "text": "Today's plan",
+   "intent": "today",
+   "source": "app:dayTitle:en"
+  },
+  {
+   "text": "आज मुझे क्या करना है?",
+   "intent": "today",
+   "source": "app:chipToday:hi"
+  },
+  {
+   "text": "आज क्या बाकी है",
+   "intent": "today",
+   "source": "app:cvToday:hi"
+  },
+  {
+   "text": "आज की योजना",
+   "intent": "today",
+   "source": "app:dayTitle:hi"
+  },
+  {
+   "text": "Ka plan jong ka sngi",
+   "intent": "today",
+   "source": "app:dayTitle:kha"
+  },
+  {
+   "text": "Vawiin ruahmanna",
+   "intent": "today",
+   "source": "app:dayTitle:lus"
+  },
+  {
+   "text": "ঙসিগী থৌরাং",
+   "intent": "today",
+   "source": "app:dayTitle:mni"
+  },
+  {
+   "text": "Aji din plan",
+   "intent": "today",
+   "source": "app:dayTitle:nag"
+  },
+  {
+   "text": "খেল",
+   "intent": "game",
+   "source": "app:navGames:as"
+  },
+  {
+   "text": "কাৰ্যকলাপ",
+   "intent": "game",
+   "source": "app:activities:as"
+  },
+  {
+   "text": "খেলা",
+   "intent": "game",
+   "source": "app:navGames:bn"
+  },
+  {
+   "text": "কার্যক্রম",
+   "intent": "game",
+   "source": "app:activities:bn"
+  },
+  {
+   "text": "गेलेनाय",
+   "intent": "game",
+   "source": "app:navGames:brx"
+  },
+  {
+   "text": "खामानिफोर",
+   "intent": "game",
+   "source": "app:activities:brx"
+  },
+  {
+   "text": "खेड्ड",
+   "intent": "game",
+   "source": "app:navGames:doi"
+  },
+  {
+   "text": "गतिविधियां",
+   "intent": "game",
+   "source": "app:activities:doi"
+  },
+  {
+   "text": "Start a game",
+   "intent": "game",
+   "source": "app:chipGame:en"
+  },
+  {
+   "text": "Yes, let us play",
+   "intent": "game",
+   "source": "app:cvYes:en"
+  },
+  {
+   "text": "Games",
+   "intent": "game",
+   "source": "app:navGames:en"
+  },
+  {
+   "text": "Activities",
+   "intent": "game",
+   "source": "app:activities:en"
+  },
+  {
+   "text": "રમત",
+   "intent": "game",
+   "source": "app:navGames:gu"
+  },
+  {
+   "text": "પ્રવૃત્તિઓ",
+   "intent": "game",
+   "source": "app:activities:gu"
+  },
+  {
+   "text": "खेल शुरू करें",
+   "intent": "game",
+   "source": "app:chipGame:hi"
+  },
+  {
+   "text": "हाँ, खेलें",
+   "intent": "game",
+   "source": "app:cvYes:hi"
+  },
+  {
+   "text": "खेल",
+   "intent": "game",
+   "source": "app:navGames:hi"
+  },
+  {
+   "text": "गतिविधियाँ",
+   "intent": "game",
+   "source": "app:activities:hi"
+  },
+  {
+   "text": "Kylla",
+   "intent": "game",
+   "source": "app:navGames:kha"
+  },
+  {
+   "text": "Ki kam",
+   "intent": "game",
+   "source": "app:activities:kha"
+  },
+  {
+   "text": "ಆಟ",
+   "intent": "game",
+   "source": "app:navGames:kn"
+  },
+  {
+   "text": "ಚಟುವಟಿಕೆಗಳು",
+   "intent": "game",
+   "source": "app:activities:kn"
+  },
+  {
+   "text": "खेळ",
+   "intent": "game",
+   "source": "app:navGames:kok"
+  },
+  {
+   "text": "कार्यावळी",
+   "intent": "game",
+   "source": "app:activities:kok"
+  },
+  {
+   "text": "کھیل",
+   "intent": "game",
+   "source": "app:navGames:ks"
+  },
+  {
+   "text": "کٲم",
+   "intent": "game",
+   "source": "app:activities:ks"
+  },
+  {
+   "text": "Infiamna",
+   "intent": "game",
+   "source": "app:navGames:lus"
+  },
+  {
+   "text": "Thiltihte",
+   "intent": "game",
+   "source": "app:activities:lus"
+  },
+  {
+   "text": "गतिविधि",
+   "intent": "game",
+   "source": "app:activities:mai"
+  },
+  {
+   "text": "കളി",
+   "intent": "game",
+   "source": "app:navGames:ml"
+  },
+  {
+   "text": "പ്രവർത്തനങ്ങൾ",
+   "intent": "game",
+   "source": "app:activities:ml"
+  },
+  {
+   "text": "শান্নবা",
+   "intent": "game",
+   "source": "app:navGames:mni"
+  },
+  {
+   "text": "থবকশিং",
+   "intent": "game",
+   "source": "app:activities:mni"
+  },
+  {
+   "text": "उपक्रम",
+   "intent": "game",
+   "source": "app:activities:mr"
+  },
+  {
+   "text": "Khel",
+   "intent": "game",
+   "source": "app:navGames:nag"
+  },
+  {
+   "text": "Kaam khan",
+   "intent": "game",
+   "source": "app:activities:nag"
+  },
+  {
+   "text": "गतिविधिहरू",
+   "intent": "game",
+   "source": "app:activities:ne"
+  },
+  {
+   "text": "ଖେଳ",
+   "intent": "game",
+   "source": "app:navGames:or"
+  },
+  {
+   "text": "କାର୍ଯ୍ୟକଳାପ",
+   "intent": "game",
+   "source": "app:activities:or"
+  },
+  {
+   "text": "ਖੇਡ",
+   "intent": "game",
+   "source": "app:navGames:pa"
+  },
+  {
+   "text": "ਗਤੀਵਿਧੀਆਂ",
+   "intent": "game",
+   "source": "app:activities:pa"
+  },
+  {
+   "text": "क्रीडा",
+   "intent": "game",
+   "source": "app:navGames:sa"
+  },
+  {
+   "text": "क्रियाः",
+   "intent": "game",
+   "source": "app:activities:sa"
+  },
+  {
+   "text": "ᱠᱟᱹᱢᱤᱠᱚ",
+   "intent": "game",
+   "source": "app:activities:sat"
+  },
+  {
+   "text": "راند",
+   "intent": "game",
+   "source": "app:navGames:sd"
+  },
+  {
+   "text": "سرگرميون",
+   "intent": "game",
+   "source": "app:activities:sd"
+  },
+  {
+   "text": "விளையாட்டு",
+   "intent": "game",
+   "source": "app:navGames:ta"
+  },
+  {
+   "text": "செயல்பாடுகள்",
+   "intent": "game",
+   "source": "app:activities:ta"
+  },
+  {
+   "text": "ఆట",
+   "intent": "game",
+   "source": "app:navGames:te"
+  },
+  {
+   "text": "కార్యకలాపాలు",
+   "intent": "game",
+   "source": "app:activities:te"
+  },
+  {
+   "text": "سرگرمیاں",
+   "intent": "game",
+   "source": "app:activities:ur"
+  },
+  {
+   "text": "Start mind check",
+   "intent": "check",
+   "source": "app:chipCheck:en"
+  },
+  {
+   "text": "Do the mind check",
+   "intent": "check",
+   "source": "app:cvCheck:en"
+  },
+  {
+   "text": "Mind check",
+   "intent": "check",
+   "source": "app:checkTitle:en"
+  },
+  {
+   "text": "मन जाँच शुरू करें",
+   "intent": "check",
+   "source": "app:chipCheck:hi"
+  },
+  {
+   "text": "मन जाँच करें",
+   "intent": "check",
+   "source": "app:cvCheck:hi"
+  },
+  {
+   "text": "मन जाँच",
+   "intent": "check",
+   "source": "app:checkTitle:hi"
+  },
+  {
+   "text": "মোৰ মানুহ",
+   "intent": "people",
+   "source": "app:people:as"
+  },
+  {
+   "text": "মানুহ",
+   "intent": "people",
+   "source": "app:navPpl:as"
+  },
+  {
+   "text": "আমার মানুষ",
+   "intent": "people",
+   "source": "app:people:bn"
+  },
+  {
+   "text": "আপনজন",
+   "intent": "people",
+   "source": "app:navPpl:bn"
+  },
+  {
+   "text": "आंनि सुबुंफोर",
+   "intent": "people",
+   "source": "app:people:brx"
+  },
+  {
+   "text": "मानसि",
+   "intent": "people",
+   "source": "app:navPpl:brx"
+  },
+  {
+   "text": "मेरे लोक",
+   "intent": "people",
+   "source": "app:people:doi"
+  },
+  {
+   "text": "अपने",
+   "intent": "people",
+   "source": "app:navPpl:doi"
+  },
+  {
+   "text": "Show my people",
+   "intent": "people",
+   "source": "app:chipPeople:en"
+  },
+  {
+   "text": "My people",
+   "intent": "people",
+   "source": "app:people:en"
+  },
+  {
+   "text": "People",
+   "intent": "people",
+   "source": "app:navPpl:en"
+  },
+  {
+   "text": "મારા લોકો",
+   "intent": "people",
+   "source": "app:people:gu"
+  },
+  {
+   "text": "સ્વજનો",
+   "intent": "people",
+   "source": "app:navPpl:gu"
+  },
+  {
+   "text": "मेरे अपने दिखाएँ",
+   "intent": "people",
+   "source": "app:chipPeople:hi"
+  },
+  {
+   "text": "मेरे अपने",
+   "intent": "people",
+   "source": "app:people:hi"
+  },
+  {
+   "text": "Ki paralok jong nga",
+   "intent": "people",
+   "source": "app:people:kha"
+  },
+  {
+   "text": "Paralok",
+   "intent": "people",
+   "source": "app:navPpl:kha"
+  },
+  {
+   "text": "ನನ್ನ ಜನ",
+   "intent": "people",
+   "source": "app:people:kn"
+  },
+  {
+   "text": "ನನ್ನವರು",
+   "intent": "people",
+   "source": "app:navPpl:kn"
+  },
+  {
+   "text": "म्हजी माणसां",
+   "intent": "people",
+   "source": "app:people:kok"
+  },
+  {
+   "text": "आपले",
+   "intent": "people",
+   "source": "app:navPpl:kok"
+  },
+  {
+   "text": "میٚنہٕ لُکھ",
+   "intent": "people",
+   "source": "app:people:ks"
+  },
+  {
+   "text": "پننہٕ",
+   "intent": "people",
+   "source": "app:navPpl:ks"
+  },
+  {
+   "text": "Ka chhungte",
+   "intent": "people",
+   "source": "app:people:lus"
+  },
+  {
+   "text": "Chhungte",
+   "intent": "people",
+   "source": "app:navPpl:lus"
+  },
+  {
+   "text": "हमर लोक",
+   "intent": "people",
+   "source": "app:people:mai"
+  },
+  {
+   "text": "अपन",
+   "intent": "people",
+   "source": "app:navPpl:mai"
+  },
+  {
+   "text": "എന്റെ ആളുകൾ",
+   "intent": "people",
+   "source": "app:people:ml"
+  },
+  {
+   "text": "ঐগী মীওইশিং",
+   "intent": "people",
+   "source": "app:people:mni"
+  },
+  {
+   "text": "ইমুং",
+   "intent": "people",
+   "source": "app:navPpl:mni"
+  },
+  {
+   "text": "माझी माणसं",
+   "intent": "people",
+   "source": "app:people:mr"
+  },
+  {
+   "text": "आपली माणसं",
+   "intent": "people",
+   "source": "app:navPpl:mr"
+  },
+  {
+   "text": "Moi manu khan",
+   "intent": "people",
+   "source": "app:people:nag"
+  },
+  {
+   "text": "Manu",
+   "intent": "people",
+   "source": "app:navPpl:nag"
+  },
+  {
+   "text": "मेरा मानिस",
+   "intent": "people",
+   "source": "app:people:ne"
+  },
+  {
+   "text": "आफ्ना",
+   "intent": "people",
+   "source": "app:navPpl:ne"
+  },
+  {
+   "text": "ମୋର ଲୋକ",
+   "intent": "people",
+   "source": "app:people:or"
+  },
+  {
+   "text": "ଆପଣାର",
+   "intent": "people",
+   "source": "app:navPpl:or"
+  },
+  {
+   "text": "ਮੇਰੇ ਲੋਕ",
+   "intent": "people",
+   "source": "app:people:pa"
+  },
+  {
+   "text": "ਆਪਣੇ",
+   "intent": "people",
+   "source": "app:navPpl:pa"
+  },
+  {
+   "text": "मम जनाः",
+   "intent": "people",
+   "source": "app:people:sa"
+  },
+  {
+   "text": "स्वजनाः",
+   "intent": "people",
+   "source": "app:navPpl:sa"
+  },
+  {
+   "text": "ᱤᱧᱟᱜ ᱦᱚᱲᱠᱚ",
+   "intent": "people",
+   "source": "app:people:sat"
+  },
+  {
+   "text": "منهنجا ماڻهو",
+   "intent": "people",
+   "source": "app:people:sd"
+  },
+  {
+   "text": "پنھنجا",
+   "intent": "people",
+   "source": "app:navPpl:sd"
+  },
+  {
+   "text": "என் மனிதர்கள்",
+   "intent": "people",
+   "source": "app:people:ta"
+  },
+  {
+   "text": "என்னவர்கள்",
+   "intent": "people",
+   "source": "app:navPpl:ta"
+  },
+  {
+   "text": "నా వాళ్ళు",
+   "intent": "people",
+   "source": "app:people:te"
+  },
+  {
+   "text": "میرے لوگ",
+   "intent": "people",
+   "source": "app:people:ur"
+  },
+  {
+   "text": "اپنے",
+   "intent": "people",
+   "source": "app:navPpl:ur"
+  },
+  {
+   "text": "I am good",
+   "intent": "unknown",
+   "source": "app:cvGood:en"
+  },
+  {
+   "text": "I am alright",
+   "intent": "unknown",
+   "source": "app:cvOk:en"
+  },
+  {
+   "text": "I feel tired",
+   "intent": "unknown",
+   "source": "app:cvTired:en"
+  },
+  {
+   "text": "Not now",
+   "intent": "unknown",
+   "source": "app:cvNo:en"
+  },
+  {
+   "text": "Nothing for now",
+   "intent": "unknown",
+   "source": "app:cvNothing:en"
+  },
+  {
+   "text": "Let us talk again",
+   "intent": "unknown",
+   "source": "app:cvStartOver:en"
+  },
+  {
+   "text": "How are you feeling today?",
+   "intent": "unknown",
+   "source": "app:cvMood:en"
+  },
+  {
+   "text": "मैं ठीक हूँ",
+   "intent": "unknown",
+   "source": "app:cvGood:hi"
+  },
+  {
+   "text": "ठीक-ठाक हूँ",
+   "intent": "unknown",
+   "source": "app:cvOk:hi"
+  },
+  {
+   "text": "थकान लग रही है",
+   "intent": "unknown",
+   "source": "app:cvTired:hi"
+  },
+  {
+   "text": "अभी नहीं",
+   "intent": "unknown",
+   "source": "app:cvNo:hi"
+  },
+  {
+   "text": "अभी कुछ नहीं",
+   "intent": "unknown",
+   "source": "app:cvNothing:hi"
+  },
+  {
+   "text": "फिर बात करें",
+   "intent": "unknown",
+   "source": "app:cvStartOver:hi"
+  },
+  {
+   "text": "आज आप कैसा महसूस कर रहे हैं?",
+   "intent": "unknown",
+   "source": "app:cvMood:hi"
+  },
+  {
+   "text": "medicine",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "medication",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "tablet",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "dawa",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "davaa",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "दवा",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "दवाई",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "ওষুধ",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "మందు",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "ಔಷಧಿ",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "മരുന്ന്",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "மாத்திரை",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "دوا",
+   "intent": "med",
+   "source": "keyword"
+  },
+  {
+   "text": "today",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "schedule",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "routine",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "aaj",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "आज",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "दिनचर्या",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "আজ",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "இன்று",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "నేడు",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "ಇಂದು",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "ഇന്ന്",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "آج",
+   "intent": "today",
+   "source": "keyword"
+  },
+  {
+   "text": "who is",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "who's",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "kaun",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "कौन",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "কে",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "யார்",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "ఎవరు",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "ಯಾರು",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "ആരാണ്",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "کون",
+   "intent": "who",
+   "source": "keyword"
+  },
+  {
+   "text": "game",
+   "intent": "game",
+   "source": "keyword"
+  },
+  {
+   "text": "play",
+   "intent": "game",
+   "source": "keyword"
+  },
+  {
+   "text": "ஆட்டம்",
+   "intent": "game",
+   "source": "keyword"
+  },
+  {
+   "text": "question",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "sawal",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "सवाल",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "प्रश्न",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "প্রশ্ন",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "கேள்வி",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "ప్రశ్న",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "ಪ್ರಶ್ನೆ",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "ചോദ്യം",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "سوال",
+   "intent": "check",
+   "source": "keyword"
+  },
+  {
+   "text": "family",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "parivar",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "परिवार",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "পরিবার",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "குடும்பம்",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "కుటుంబం",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "ಕುಟುಂಬ",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "കുടുംബം",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "خاندان",
+   "intent": "people",
+   "source": "keyword"
+  },
+  {
+   "text": "when do I take my medicine",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "did I take my tablets",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "is it time for my pills",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "what medicine do I take",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "medicine time",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "I need my tablet",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "remind me about my medicine",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "which tablet now",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "दवा कब लेनी है",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "मेरी गोली का समय",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "क्या मैंने दवा ली",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "dawa kab leni hai",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "goli ka time ho gaya",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "ওষুধ কখন খাব",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "ঔষধ কেতিয়া খাম",
+   "intent": "med",
+   "source": "template"
+  },
+  {
+   "text": "what is my plan today",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "what do I do now",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "what is left for today",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "what is next",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "what should I do this morning",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "tell me my day",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "anything to do today",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "आज क्या करना है",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "अब क्या करूँ",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "आज का काम",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "aaj kya karna hai",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "ab kya karna hai",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "আজ কী করতে হবে",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "আজি কি কৰিব লাগে",
+   "intent": "today",
+   "source": "template"
+  },
+  {
+   "text": "who is Bishnu",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is Rupa",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is Mina",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is Dr. Sharma",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is बिष्णु",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is रूपा",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is मीना",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is বিষ্ণু",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is রূপা",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about Bishnu",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about Rupa",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about Mina",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about Dr. Sharma",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about बिष्णु",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about रूपा",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about मीना",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about বিষ্ণু",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "tell me about রূপা",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "who is this person",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who Bishnu is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who Rupa is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who Mina is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who Dr. Sharma is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who बिष्णु is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who रूपा is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who मीना is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who বিষ্ণু is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "I forgot who রূপা is",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Bishnu कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Rupa कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Mina कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Dr. Sharma कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "बिष्णु कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "रूपा कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "मीना कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "বিষ্ণু कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "রূপা कौन है",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Bishnu kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Rupa kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Mina kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Dr. Sharma kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "बिष्णु kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "रूपा kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "मीना kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "বিষ্ণু kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "রূপা kaun hai",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Bishnu কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Rupa কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Mina কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Dr. Sharma কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "बिष्णु কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "रूपा কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "मीना কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "বিষ্ণু কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "রূপা কে",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Bishnu কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Rupa কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Mina কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "Dr. Sharma কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "बिष्णु কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "रूपा কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "मीना কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "বিষ্ণু কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "রূপা কোন",
+   "intent": "who",
+   "source": "template"
+  },
+  {
+   "text": "let us play",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "I want to play a game",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "play the memory cards",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "can we play something",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "खेलते हैं",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "कोई खेल खेलें",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "khel khelna hai",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "khelte hain",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "খেলা শুরু করো",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "খেল খেলোঁ",
+   "intent": "game",
+   "source": "template"
+  },
+  {
+   "text": "ask me some questions",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "test my memory",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "start the questions",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "check my memory",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "मुझसे सवाल पूछो",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "याददाश्त जाँचो",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "sawal pucho",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "memory check karo",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "আমাকে প্রশ্ন করো",
+   "intent": "check",
+   "source": "template"
+  },
+  {
+   "text": "show my family",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "who are my people",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "show me my people",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "I want to see my family",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "open my family",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "मेरे परिवार को दिखाओ",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "parivar dikhao",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "apne log dikhao",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "আমার পরিবার দেখাও",
+   "intent": "people",
+   "source": "template"
+  },
+  {
+   "text": "hello",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "good morning",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "thank you",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "namaste",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "नमस्ते",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "धन्यवाद",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "I am hungry",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "it is cold today",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "open the window",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "play some music",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "switch on the fan",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "what is the weather",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "I want to sleep",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "where is my spectacles",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "call the taxi",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "sing a song",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "how are you",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "मुझे भूख लगी है",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "गाना बजाओ",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "पंखा चलाओ",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "khana kab milega",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "ভালো আছি",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "মই ভালে আছোঁ",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "yes",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "no",
+   "intent": "unknown",
+   "source": "template"
+  },
+  {
+   "text": "okay",
+   "intent": "unknown",
+   "source": "template"
+  }
+ ]
+}

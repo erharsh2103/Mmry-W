@@ -1,0 +1,140 @@
+/*
+ * Mmry design tokens - carried over unchanged from the original app:
+ * cream surfaces, navy ink, forest green actions, large rounded cards,
+ * 56-60 px touch targets and Atkinson Hyperlegible for low-vision reading.
+ */
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-next-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+    U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-next-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 100 700;
+  /* block: never flash the ligature name ("medication") in place of the icon */
+  font-display: block;
+  src: url("/fonts/material-symbols-outlined.woff2") format("woff2");
+}
+
+:root {
+  --cream: #fbf9f5;
+  --cream-2: #f5f3ef;
+  --stone: #efeeea;
+  --stone-2: #eae8e4;
+  --stone-3: #e4e2de;
+  --line: #c4c6d0;
+  --line-soft: #e3dfd7;
+  --navy: #001736;
+  --navy-soft: #d6e3ff;
+  --ink: #1b1c1a;
+  --muted: #43474f;
+  --muted-2: #7a8194;
+  --green: #1b5e20;
+  --green-soft: #e8f0e9;
+  --green-tint: #dcefd8;
+  --green-bright: #acf4a4;
+  --green-deep: #0c5216;
+  --red: #b71c1c;
+  --red-deep: #93000a;
+  --rust: #8c2f1d;
+  --rust-soft: #f7e7e4;
+  --amber: #7a6a2e;
+  --amber-soft: #fbf6e6;
+  --white: #ffffff;
+  --overlay: #30312e;
+  --base-size: 19px;
+  --font: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  color: var(--navy);
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: var(--base-size);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--navy);
+  text-decoration: none;
+}
+
+button,
+select,
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+:focus-visible {
+  outline: 4px solid var(--green);
+  outline-offset: 3px;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

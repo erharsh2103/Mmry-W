@@ -1,0 +1,28 @@
+{
+  "$comment": "One exchange with the talk companion. What the patient said is sensitive, so it is stored only as AES-256-GCM ciphertext. Expires after 180 days (see collections/collections.json).",
+  "bsonType": "object",
+  "required": ["patientId", "userId", "lang", "source", "textEnc", "intent", "confidence", "classifier", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": { "bsonType": "objectId" },
+    "patientId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "userId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "lang": { "bsonType": "string", "pattern": "^[a-z]{2,3}$" },
+    "source": { "enum": ["speech", "chip"] },
+    "textEnc": { "bsonType": "string", "maxLength": 4096 },
+    "speechConfidence": { "bsonType": ["double", "int", "null"], "minimum": 0, "maximum": 1 },
+    "intent": { "enum": ["med", "today", "who", "game", "check", "people", "unknown"] },
+    "confidence": { "bsonType": ["double", "int"], "minimum": 0, "maximum": 1 },
+    "classifier": {
+      "bsonType": "object",
+      "required": ["name", "version", "fallback"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "bsonType": "string", "maxLength": 64 },
+        "version": { "bsonType": "string", "maxLength": 64 },
+        "fallback": { "bsonType": "bool" }
+      }
+    },
+    "createdAt": { "bsonType": "date" }
+  }
+}

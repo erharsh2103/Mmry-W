@@ -1,0 +1,345 @@
+/* Shared building blocks. Values match the original app's inline styles. */
+
+.icon {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: "FILL" 1;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  display: inline-block;
+  flex: none;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+}
+
+.screen {
+  animation: riseIn 260ms ease both;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 2.3em;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.pageSub {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-weight: 600;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.card {
+  background: var(--white);
+  border: 2px solid var(--navy);
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.15em;
+  font-weight: 800;
+}
+
+.muted {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mt18 {
+  margin-top: 18px;
+}
+
+.btn {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.primary {
+  composes: btn;
+  border: 2px solid var(--green);
+  background: var(--green);
+  color: var(--white);
+}
+
+.navy {
+  composes: btn;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.outline {
+  composes: btn;
+  border: 2px solid var(--navy);
+  background: var(--cream-2);
+  color: var(--navy);
+}
+
+.soft {
+  composes: btn;
+  border: 2px solid var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.danger {
+  composes: btn;
+  border: 2px solid var(--rust);
+  background: var(--cream);
+  color: var(--rust);
+}
+
+.pillButton {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 18px;
+  font-size: 1.1em;
+  font-weight: 800;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.pillButtonGreen {
+  composes: pillButton;
+  background: var(--green);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8em;
+  font-weight: 800;
+  border: 2px solid currentColor;
+}
+
+.badgeGreen {
+  composes: badge;
+  background: var(--green-tint);
+  color: var(--green);
+}
+
+.badgeAmber {
+  composes: badge;
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--stone-3);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 400ms ease;
+}
+
+.areaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.areaLabel {
+  width: 34%;
+  font-weight: 700;
+  font-size: 0.95em;
+}
+
+.areaTrack {
+  flex: 1;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--stone-3);
+  overflow: hidden;
+}
+
+.areaValue {
+  width: 52px;
+  text-align: right;
+  font-weight: 800;
+}
+
+.field {
+  display: block;
+  font-weight: 700;
+}
+
+.input {
+  margin-top: 6px;
+  width: 100%;
+  border: 2px solid var(--navy);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 1.05em;
+  background: var(--cream-2);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--red);
+}
+
+.fieldHint {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.9em;
+}
+
+.fieldError {
+  display: block;
+  margin-top: 4px;
+  color: var(--red);
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.stateBox {
+  margin-top: 22px;
+  border: 2px dashed var(--line);
+  border-radius: 20px;
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.errorBox {
+  composes: stateBox;
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+.formError {
+  margin: 0;
+  background: var(--stone-2);
+  border: 2px solid var(--red);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: var(--red-deep);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--overlay);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 520px;
+  background: var(--cream);
+  border-radius: 28px;
+  padding: 28px;
+  max-height: 92vh;
+  overflow: auto;
+}
+
+.tileGrid {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.tile {
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 22px;
+  padding: 14px;
+  border: 3px solid var(--line);
+  background: var(--cream-2);
+  font-size: 1em;
+  font-weight: 700;
+  text-align: center;
+  color: var(--navy);
+}
+
+.tile[data-tone="right"] {
+  border-color: var(--green);
+  background: var(--green-tint);
+}
+
+.tile[data-tone="picked"] {
+  border-color: var(--navy);
+  background: var(--stone-2);
+}
+
+.tile:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.tileIcon {
+  font-size: 2.6em;
+  line-height: 1;
+}
+
+.tileSub {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+.faceCard {
+  margin: 20px auto 0;
+  max-width: 340px;
+  border: 2px solid var(--navy);
+  background: var(--stone);
+  border-radius: 26px;
+  padding: 26px;
+  display: grid;
+  place-items: center;
+  font-size: 4.5em;
+  line-height: 1;
+}
+
+.timerTrack {
+  margin-top: 16px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--stone-3);
+  overflow: hidden;
+}

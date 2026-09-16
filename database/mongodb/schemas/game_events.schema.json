@@ -1,0 +1,34 @@
+{
+  "$comment": "Step-by-step record of one game session. The summary row (accuracy, level, timing) is PostgreSQL game_sessions; this document holds only what varies by game: the puzzle that was shown and every pick in order.",
+  "bsonType": "object",
+  "required": ["patientId", "sessionId", "gameType", "level", "puzzle", "picks", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": { "bsonType": "objectId" },
+    "patientId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "sessionId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "gameType": {
+      "enum": ["object-recall", "sequence", "name-face", "attention", "memory-cards", "pattern", "find-object", "picture-recall"]
+    },
+    "level": { "bsonType": "int", "minimum": 1, "maximum": 5 },
+    "puzzle": {
+      "bsonType": "object",
+      "description": "Game-specific configuration, e.g. the objects shown or the card layout."
+    },
+    "picks": {
+      "bsonType": "array",
+      "maxItems": 500,
+      "items": {
+        "bsonType": "object",
+        "required": ["atMs", "value", "correct"],
+        "additionalProperties": false,
+        "properties": {
+          "atMs": { "bsonType": "int", "minimum": 0 },
+          "value": { "bsonType": "string", "maxLength": 64 },
+          "correct": { "bsonType": "bool" }
+        }
+      }
+    },
+    "createdAt": { "bsonType": "date" }
+  }
+}

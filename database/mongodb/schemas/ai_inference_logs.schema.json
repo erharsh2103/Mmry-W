@@ -1,0 +1,17 @@
+{
+  "$comment": "Operational trail of calls to the Python AI service: which model answered, how long it took, and whether the backend had to fall back to its rule. Holds no patient text. Expires after 90 days.",
+  "bsonType": "object",
+  "required": ["task", "patientId", "ok", "fallback", "latencyMs", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": { "bsonType": "objectId" },
+    "task": { "enum": ["intent", "difficulty"] },
+    "patientId": { "bsonType": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "modelVersion": { "bsonType": ["string", "null"], "maxLength": 64 },
+    "ok": { "bsonType": "bool" },
+    "fallback": { "bsonType": "bool" },
+    "latencyMs": { "bsonType": "int", "minimum": 0 },
+    "error": { "bsonType": ["string", "null"], "maxLength": 300 },
+    "createdAt": { "bsonType": "date" }
+  }
+}

@@ -1,0 +1,142 @@
+.shell {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.body {
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+}
+
+.main {
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.content {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px 20px 20px;
+  min-height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .content {
+    max-width: 720px;
+    padding: 24px 28px 28px;
+  }
+}
+
+.center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.pinCard {
+  width: 100%;
+  max-width: 380px;
+  background: var(--cream);
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  padding: 24px;
+  max-height: 94vh;
+  overflow: auto;
+}
+
+.pinDots {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pinDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid var(--navy);
+  background: var(--cream);
+}
+
+.pinDot[data-filled="true"] {
+  background: var(--navy);
+}
+
+.pinKeys {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pinKey {
+  min-height: 60px;
+  border: 2px solid var(--navy);
+  background: var(--white);
+  color: var(--navy);
+  border-radius: 8px;
+  font-size: 1.35em;
+  font-weight: 700;
+}
+
+.langList {
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px;
+}
+
+.langCard {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  border: 3px solid var(--navy);
+  background: var(--cream-2);
+  color: var(--navy);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.langCard[aria-checked="true"] {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.langText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.langNative {
+  font-weight: 700;
+  font-size: 1.08em;
+  line-height: 1.3;
+}
+
+.langEnglish {
+  font-weight: 400;
+  font-size: 0.88em;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.langEnglish[data-unavailable="true"] {
+  color: var(--amber);
+}
