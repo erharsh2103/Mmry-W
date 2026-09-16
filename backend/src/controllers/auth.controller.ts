@@ -5,8 +5,9 @@ import { authService, type ClientContext, type Session } from "../services/auth.
 import { unauthorized } from "../utils/httpError.js";
 
 export const REFRESH_COOKIE = "mmry_rt";
-/* Carries no secret: it only lets the frontend's proxy skip a round trip when
-   deciding whether to show the sign-in page. The API never trusts it. */
+/* Carries no secret (its value is "1"): it only tells the frontend whether a
+   session might exist, so signed-out visitors skip a refresh round trip and
+   the proxy can route them to sign-in. The API never trusts it. */
 export const SESSION_HINT_COOKIE = "mmry_session";
 
 const refreshCookie = (expires: Date): CookieOptions => ({
@@ -18,7 +19,7 @@ const refreshCookie = (expires: Date): CookieOptions => ({
 });
 
 const hintCookie = (expires: Date): CookieOptions => ({
-  httpOnly: true,
+  httpOnly: false,
   secure: env.COOKIE_SECURE,
   sameSite: "lax",
   path: "/",

@@ -6,6 +6,7 @@
  * is an httpOnly cookie scoped to /api/v1/auth that JavaScript cannot see;
  * /auth/refresh swaps it for a new access token.
  */
+import { broadcast } from "@/lib/sync";
 import type { SessionResponse, User } from "@/types/api";
 
 export const CSRF_HEADER = "x-mmry-csrf";
@@ -23,10 +24,13 @@ export function getUser(): User | null {
   return currentUser;
 }
 
-export function setSession(session: SessionResponse | null): void {
+export function setSession(session: SessionResponse | null, { share = true } = {}): void {
+  const wasSignedIn = currentUser !== null;
   accessToken = session?.accessToken ?? null;
   currentUser = session?.user ?? null;
   listeners.forEach((fn) => fn(currentUser));
+  if (share && wasSignedIn && !currentUser) broadcast({ type: "signout" });
+  if (share && !wasSignedIn && currentUser) broadcast({ type: "signin" });
 }
 
 export function onUserChange(fn: (user: User | null) => void): () => void {

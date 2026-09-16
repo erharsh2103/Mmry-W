@@ -6,10 +6,11 @@ import { bearingLabel, cleanPhone, fixAge, fmtDist, placeDistance, radarLayout, 
 import { isPlace, personText } from "@/lib/people";
 import { useI18n } from "@/hooks/useI18n";
 import { useCurrentPatient } from "@/hooks/usePatient";
-import { resourceKey, usePeople, useSafety } from "@/hooks/usePatientData";
+import { LIVE, resourceKey, usePeople, useSafety } from "@/hooks/usePatientData";
 import { setResource, useStoredValue } from "@/hooks/useResource";
 import type { LocationError } from "@/hooks/useLocationTracking";
 import { Icon } from "@/components/ui/Icon";
+import { LiveStamp } from "@/components/ui/LiveStamp";
 import { StateMessage } from "@/components/ui/StateMessage";
 import type { SafetyState } from "@/types/api";
 import ui from "@/components/ui/ui.module.css";
@@ -21,7 +22,7 @@ const ERROR_KEY: Record<Exclude<LocationError, "">, string> = { denied: "locDeni
 export function SafetyPanel() {
   const patient = useCurrentPatient();
   const { t } = useI18n();
-  const safety = useSafety();
+  const safety = useSafety(LIVE.safety);
   const people = usePeople();
   const geoError = useStoredValue<LocationError>(resourceKey(patient.id, "geoError")) ?? "";
   const [note, setNote] = useState("");
@@ -76,6 +77,7 @@ export function SafetyPanel() {
         </h2>
         {live && <span className={ui.badgeGreen}>{t("locLive")}</span>}
       </div>
+      <LiveStamp updatedAt={safety.updatedAt} loading={safety.loading} />
       <p className={ui.muted} style={{ margin: "8px 0 0", lineHeight: 1.5 }}>
         {t("locSub")}
       </p>

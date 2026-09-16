@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    width: 260px;
+    width: clamp(220px, 20vw, 280px);
     flex: none;
     border-right: 2px solid var(--navy);
     background: var(--cream-2);

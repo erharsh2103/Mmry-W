@@ -108,7 +108,7 @@ export function SettingsForm() {
         </div>
 
         <p style={{ margin: "18px 0 10px", fontWeight: 700 }}>{t("pfVoicePick")}</p>
-        <div role="radiogroup" aria-label={t("pfVoicePick")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
+        <div role="radiogroup" aria-label={t("pfVoicePick")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(min(96px, 100%), 1fr))" }}>
           {VOICES.map((v) => (
             <button key={v.id} type="button" role="radio" aria-checked={patient.voicePref === v.id} style={{ ...choice(patient.voicePref === v.id), minHeight: 92 }} onClick={() => void save({ voicePref: v.id })}>
               <Icon name={v.icon} size={30} />
@@ -118,7 +118,7 @@ export function SettingsForm() {
         </div>
 
         <p style={{ margin: "20px 0 10px", fontWeight: 700 }}>{t("pfSpeed")}</p>
-        <div role="radiogroup" aria-label={t("pfSpeed")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
+        <div role="radiogroup" aria-label={t("pfSpeed")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(min(96px, 100%), 1fr))" }}>
           {SPEEDS.map((s) => (
             <button key={s.id} type="button" role="radio" aria-checked={Math.abs(patient.voiceRate - s.id) < 0.03} style={choice(Math.abs(patient.voiceRate - s.id) < 0.03)} onClick={() => void save({ voiceRate: s.id })}>
               {t(s.key)}
@@ -132,7 +132,7 @@ export function SettingsForm() {
         </button>
 
         <p style={{ margin: "22px 0 10px", fontWeight: 700 }}>{t("stTextSize")}</p>
-        <div role="radiogroup" aria-label={t("stTextSize")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}>
+        <div role="radiogroup" aria-label={t("stTextSize")} style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(52px, 1fr))" }}>
           {SCALES.map((scale) => (
             <button
               key={scale}

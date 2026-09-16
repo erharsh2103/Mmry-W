@@ -10,8 +10,12 @@
   border-bottom: 2px solid var(--navy);
 }
 
+.top {
+  padding-top: var(--safe-top);
+}
+
 .topInner {
-  max-width: 480px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 14px 20px;
   display: flex;
@@ -32,9 +36,9 @@
 .body {
   flex: 1;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 28px 20px 40px;
+  padding: clamp(20px, 5vw, 44px) var(--gutter) calc(40px + var(--safe-bottom));
   animation: riseIn 260ms ease both;
 }
 
@@ -61,7 +65,7 @@
 
 .hero {
   margin-top: 8px;
-  font-size: 2.3em;
+  font-size: clamp(1.8em, 1.1em + 3.2vw, 3em);
   line-height: 1.1;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -132,4 +136,28 @@
   font-size: 0.9em;
   font-weight: 600;
   text-align: center;
+}
+
+/* Landing page on wider screens: copy beside the feature list. */
+.landing {
+  max-width: 1080px;
+}
+
+@media (min-width: 900px) {
+  .landingGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 48px;
+    align-items: center;
+  }
+
+  .landingGrid .features {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 560px) and (max-width: 899px) {
+  .features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

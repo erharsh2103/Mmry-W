@@ -10,7 +10,7 @@ interface Props {
 /* The large answer tiles shared by games and the mind check. */
 export function TileGrid({ tiles, cols, onPick }: Props) {
   return (
-    <div className={styles.tileGrid} style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+    <div className={styles.tileGrid} data-cols={Math.max(1, Math.min(6, cols))}>
       {tiles.map((tile) => (
         <button
           key={tile.key}

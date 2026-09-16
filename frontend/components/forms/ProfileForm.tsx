@@ -9,6 +9,7 @@ import { Field } from "@/components/ui/Field";
 import { Icon } from "@/components/ui/Icon";
 import type { MemoryVault } from "@/types/api";
 import ui from "@/components/ui/ui.module.css";
+import screens from "@/components/dashboard/screens.module.css";
 
 type Saved = "" | "saving" | "saved" | "error";
 
@@ -98,6 +99,8 @@ export function ProfileForm() {
       <h1 className={ui.pageTitle}>{t("pfTitle")}</h1>
       <p className={ui.pageSub}>{t("pfSub")}</p>
 
+      <div className={screens.formColumns}>
+      <div>
       <form className={ui.card} style={{ marginTop: 22 }} onSubmit={saveDetails} noValidate>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <span
@@ -168,7 +171,8 @@ export function ProfileForm() {
         </div>
       </section>
 
-      <form className={ui.card} style={{ marginTop: 18 }} onSubmit={saveVault} noValidate>
+      </div>
+      <form className={ui.card} style={{ marginTop: 22 }} onSubmit={saveVault} noValidate>
         <h2 className={ui.cardTitle}>{t("pfVault")}</h2>
         <p className={ui.muted} style={{ margin: "8px 0 14px" }}>
           {t("pfVaultNote")}
@@ -184,6 +188,7 @@ export function ProfileForm() {
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

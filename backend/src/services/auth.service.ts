@@ -87,25 +87,32 @@ export const authService = {
     const outcome = await withTransaction(async (db) => {
       const token = await refreshTokensRepository.findByHashForUpdate(db, tokenHash);
       if (!token) return { kind: "invalid" as const };
+      if (token.expiresAt.getTime() <= Date.now()) return { kind: "invalid" as const };
       if (token.revokedAt) {
-        // Two tabs refreshing at the same moment present the same token; a
-        // replay within a few seconds of rotation is treated as that race,
-        // not as theft. Anything later revokes the whole family.
+        // A token rotated moments ago can legitimately arrive again: two tabs
+        // refreshing together, or a page reloaded before the browser stored the
+        // new cookie. Within the grace window, and only for a token that was
+        // rotated (not logged out) in a family that is still live, issue a
+        // fresh token instead of signing the caregiver out. Any later replay is
+        // treated as theft and revokes the whole family.
         const sinceRotation = Date.now() - token.revokedAt.getTime();
-        if (sinceRotation < ROTATION_GRACE_MS) return { kind: "invalid" as const };
+        if (sinceRotation < ROTATION_GRACE_MS) {
+          const live = token.replacedBy !== null && (await refreshTokensRepository.familyIsLive(db, token.familyId));
+          return live ? { kind: "grace" as const, token } : { kind: "invalid" as const };
+        }
         await refreshTokensRepository.revokeFamily(db, token.familyId);
         return { kind: "reused" as const };
       }
-      if (token.expiresAt.getTime() <= Date.now()) return { kind: "invalid" as const };
       // Revoke immediately; the replacement id is linked once it exists.
       await refreshTokensRepository.revoke(db, token.id);
       return { kind: "ok" as const, token };
     });
 
-    if (outcome.kind !== "ok") throw unauthorized("Session expired, please sign in again");
+    if (outcome.kind !== "ok" && outcome.kind !== "grace") throw unauthorized("Session expired, please sign in again");
     const user = await usersRepository.findById(outcome.token.userId);
     if (!user || !user.isActive) throw unauthorized("Session expired, please sign in again");
-    return issueSession(toPublicUser(user), outcome.token.familyId, ctx, outcome.token.id);
+    // A grace reissue leaves the earlier rotation as it is; a normal refresh links the chain.
+    return issueSession(toPublicUser(user), outcome.token.familyId, ctx, outcome.kind === "ok" ? outcome.token.id : undefined);
   },
 
   async logout(presented: string | undefined): Promise<void> {

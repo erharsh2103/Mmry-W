@@ -59,8 +59,36 @@
   --amber-soft: #fbf6e6;
   --white: #ffffff;
   --overlay: #30312e;
-  --base-size: 19px;
   --font: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, sans-serif;
+
+  /*
+   * Fluid sizing. Text grows from 17 px on a 320 px phone to 20 px on a wide
+   * screen (the original fixed 19 px sits in between); a patient's own text
+   * size setting multiplies this. Gutters and content width follow the viewport.
+   */
+  --base-size: clamp(17px, 15.6px + 0.45vw, 20px);
+  --gutter: clamp(14px, 3.5vw, 32px);
+  --content-max: 480px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --content-max: 640px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --content-max: 980px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --content-max: 1120px;
+  }
 }
 
 * {
@@ -81,6 +109,15 @@ body {
   font-size: var(--base-size);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-wrap: break-word;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
 }
 
 a {

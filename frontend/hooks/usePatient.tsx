@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { ApiError, api } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import { broadcast, onSync } from "@/lib/sync";
 import type { Patient, PatientUpdate } from "@/types/api";
 
 const SELECTED_KEY = "mmry-selected-patient";
@@ -45,6 +46,40 @@ export function PatientProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
+  // Background refreshes (another tab edited the profile, the window regained
+  // focus) update the data without flashing a loading screen.
+  const [silent, setSilent] = useState(0);
+  useEffect(() => {
+    if (authStatus !== "authenticated") return;
+    let last = Date.now();
+    const refresh = () => {
+      if (document.visibilityState !== "visible" || Date.now() - last < 30_000) return;
+      last = Date.now();
+      setSilent((n) => n + 1);
+    };
+    const offSync = onSync((msg) => {
+      if (msg.type === "patients") setSilent((n) => n + 1);
+    });
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      offSync();
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [authStatus]);
+
+  useEffect(() => {
+    if (authStatus !== "authenticated" || silent === 0) return;
+    api.patients
+      .list()
+      .then(({ patients: list }) => {
+        setPatients(list);
+        setStatus(list.length ? "ready" : "none");
+      })
+      .catch(() => undefined);
+  }, [silent, authStatus]);
+
   useEffect(() => {
     if (authStatus !== "authenticated") {
       setPatients([]);
@@ -77,6 +112,7 @@ export function PatientProvider({ children }: { children: ReactNode }) {
 
   const replace = useCallback((next: Patient) => {
     setPatients((list) => (list.some((p) => p.id === next.id) ? list.map((p) => (p.id === next.id ? next : p)) : [...list, next]));
+    broadcast({ type: "patients" });
     return next;
   }, []);
 
@@ -111,7 +147,10 @@ export function PatientProvider({ children }: { children: ReactNode }) {
       },
       setPin: async (pin, id = patient?.id) => {
         if (!id) throw new Error("no patient selected");
-        return replace((await api.patients.setPin(id, pin)).patient);
+        const updated = replace((await api.patients.setPin(id, pin)).patient);
+        // The caregiver who just chose the code stays in; it applies from the next lock.
+        if (pin) setUnlocked(true);
+        return updated;
       },
       unlocked: unlocked || !patient?.hasPin,
       unlock: async (pin) => {

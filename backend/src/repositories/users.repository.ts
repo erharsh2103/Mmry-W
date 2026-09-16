@@ -98,6 +98,15 @@ export const refreshTokensRepository = {
     await db.query("UPDATE refresh_tokens SET replaced_by = $2, revoked_at = COALESCE(revoked_at, now()) WHERE id = $1", [id, replacedBy]);
   },
 
+  /* True while the login chain still has an unexpired, unrevoked token. */
+  async familyIsLive(db: Queryable, familyId: string): Promise<boolean> {
+    const { rowCount } = await db.query(
+      "SELECT 1 FROM refresh_tokens WHERE family_id = $1 AND revoked_at IS NULL AND expires_at > now() LIMIT 1",
+      [familyId],
+    );
+    return (rowCount ?? 0) > 0;
+  },
+
   async revokeFamily(db: Queryable, familyId: string): Promise<void> {
     await db.query("UPDATE refresh_tokens SET revoked_at = now() WHERE family_id = $1 AND revoked_at IS NULL", [familyId]);
   },

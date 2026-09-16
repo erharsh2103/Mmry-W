@@ -21,17 +21,10 @@
 
 .content {
   width: 100%;
-  max-width: 480px;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 16px 20px 20px;
+  padding: clamp(14px, 3vw, 28px) var(--gutter) clamp(18px, 3vw, 32px);
   min-height: 100%;
-}
-
-@media (min-width: 1024px) {
-  .content {
-    max-width: 720px;
-    padding: 24px 28px 28px;
-  }
 }
 
 .center {
@@ -90,7 +83,7 @@
 }
 
 .langList {
-  max-height: 260px;
+  max-height: min(260px, 38vh);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -139,4 +132,21 @@
 
 .langEnglish[data-unavailable="true"] {
   color: var(--amber);
+}
+
+/* Short landscape phones: keep the dialog scrollable within the screen. */
+@media (max-height: 520px) {
+  .pinCard {
+    max-height: 100dvh;
+    padding: 16px;
+  }
+
+  .pinKeys {
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  .pinKey {
+    min-height: 48px;
+  }
 }

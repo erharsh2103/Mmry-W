@@ -1,0 +1,69 @@
+{
+  "model": "difficulty-mlp",
+  "version": "20260916-s11",
+  "trained_at": "2026-09-16T13:36:01.227927+00:00",
+  "tensorflow_version": "2.17.0",
+  "features": [
+    "n_sessions",
+    "has_history",
+    "mean_accuracy",
+    "last_accuracy",
+    "accuracy_slope",
+    "mean_level",
+    "last_level",
+    "log_mean_response_ms",
+    "mean_first_try",
+    "baseline_score",
+    "has_baseline",
+    "candidate_level",
+    "candidate_minus_last"
+  ],
+  "label": "session accuracy >= 0.7",
+  "recommendation": "hardest level with predicted P(success) >= 0.6",
+  "data": {
+    "source": "simulated players (training/simulate_players.py) - no real patient data",
+    "train_rows": 288000,
+    "test_rows": 76800,
+    "test_players_unseen": true
+  },
+  "held_out": {
+    "auc": 0.9721,
+    "brier": 0.062,
+    "brier_if_true_probability_known": 0.049
+  },
+  "policy_simulation": {
+    "target_band_true_success": [
+      0.5,
+      0.85
+    ],
+    "rule": {
+      "sessions": 19200,
+      "share_in_target_band": 0.1037,
+      "mean_abs_level_error_vs_oracle": 0.9674,
+      "mean_accuracy": 0.4822
+    },
+    "model": {
+      "sessions": 19200,
+      "share_in_target_band": 0.247,
+      "mean_abs_level_error_vs_oracle": 0.2556,
+      "mean_accuracy": 0.7951
+    },
+    "model_clamped": {
+      "sessions": 19200,
+      "share_in_target_band": 0.2675,
+      "mean_abs_level_error_vs_oracle": 0.246,
+      "mean_accuracy": 0.7601
+    },
+    "oracle": {
+      "sessions": 19200,
+      "share_in_target_band": 0.4016,
+      "mean_abs_level_error_vs_oracle": 0.0,
+      "mean_accuracy": 0.7777
+    }
+  },
+  "limitations": [
+    "Trained and evaluated on a simulator; its item-response assumptions are modelling choices, not measurements.",
+    "The backend clamps every recommendation to within one level of the original rule.",
+    "Recalibrate on real, consented session data before relying on it clinically."
+  ]
+}

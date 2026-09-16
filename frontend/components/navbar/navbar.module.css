@@ -5,10 +5,14 @@
   border-bottom: 2px solid var(--navy);
 }
 
+.header {
+  padding-top: var(--safe-top);
+}
+
 .headerInner {
-  max-width: 480px;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 14px 20px;
+  padding: clamp(10px, 2vw, 14px) var(--gutter);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -17,6 +21,10 @@
 .brand {
   flex: 1;
   min-width: 0;
+  /* a full-height tap target, not just the height of the word */
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
   font-weight: 700;
   font-size: 1.25em;
   letter-spacing: 0.01em;
@@ -44,16 +52,16 @@
 }
 
 .navInner {
-  max-width: 480px;
+  max-width: var(--content-max);
   margin: 0 auto;
   display: flex;
   gap: 4px;
-  padding: 8px 8px 12px;
+  padding: 8px max(8px, env(safe-area-inset-left, 0px)) calc(12px + var(--safe-bottom)) max(8px, env(safe-area-inset-right, 0px));
 }
 
 .navItem {
-  flex: 1;
-  min-width: 56px;
+  flex: 1 1 0;
+  min-width: 0;
   border: none;
   background: transparent;
   border-radius: 8px;
@@ -73,16 +81,42 @@
 }
 
 .navLabel {
-  font-size: 0.95em;
+  max-width: 100%;
+  font-size: clamp(0.78em, 0.6em + 0.8vw, 0.95em);
   font-weight: 700;
   text-align: center;
   line-height: 1.2;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+@media (max-width: 359px) {
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Landscape phones: shorter bar, icon beside label. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .navItem {
+    flex-direction: row;
+    min-height: 48px;
+    gap: 6px;
+  }
+}
+
+/* With the sidebar visible, the bottom bar would only repeat it, and the
+   header spans the full width so the brand sits above the sidebar. */
 @media (min-width: 1024px) {
-  .headerInner,
-  .navInner {
-    max-width: 720px;
+  .nav {
+    display: none;
+  }
+
+  .headerInner {
+    max-width: none;
+    padding-left: 28px;
+    padding-right: 28px;
   }
 }

@@ -2,9 +2,10 @@
 
 import { api } from "@/lib/api";
 import { localDay, taskLabel, taskTime } from "@/lib/routine/now";
+import { useClock } from "@/hooks/useClock";
 import { useI18n } from "@/hooks/useI18n";
 import { useCurrentPatient } from "@/hooks/usePatient";
-import { resourceKey, useTasks } from "@/hooks/usePatientData";
+import { LIVE, resourceKey, useTasks } from "@/hooks/usePatientData";
 import { invalidate } from "@/hooks/useResource";
 import { useSpeech } from "@/hooks/useSpeech";
 import { Icon } from "@/components/ui/Icon";
@@ -16,8 +17,9 @@ export function DayScreen() {
   const patient = useCurrentPatient();
   const { t } = useI18n();
   const { speak, say } = useSpeech();
-  const day = localDay();
-  const tasks = useTasks(day);
+  // Re-evaluated every minute, so the routine resets at local midnight on an open screen.
+  const day = localDay(useClock(60_000));
+  const tasks = useTasks(day, LIVE.routine);
   const list = tasks.data ?? [];
   const done = list.filter((x) => x.done).length;
 

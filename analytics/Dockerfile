@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+COPY .streamlit ./.streamlit
 COPY data_processing ./data_processing
 COPY dashboards ./dashboards
 COPY models ./models

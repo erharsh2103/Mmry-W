@@ -4,9 +4,10 @@ import { useState } from "react";
 import { activityLabel, insightText } from "@/lib/care/format";
 import { GAMES } from "@/lib/games/data";
 import { useI18n } from "@/hooks/useI18n";
-import { useAnalytics, useInsights, useMindChecks } from "@/hooks/usePatientData";
+import { LIVE, useAnalytics, useInsights, useMindChecks } from "@/hooks/usePatientData";
 import { AreaBars } from "@/components/ui/AreaBars";
 import { Progress } from "@/components/ui/Progress";
+import { LiveStamp } from "@/components/ui/LiveStamp";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { GAME_TYPES } from "@/types/api";
 import ui from "@/components/ui/ui.module.css";
@@ -17,8 +18,8 @@ const PERIODS = [7, 30, 90];
 export function AnalyticsView() {
   const { t, locale } = useI18n();
   const [days, setDays] = useState(30);
-  const insights = useInsights();
-  const analytics = useAnalytics(days);
+  const insights = useInsights(undefined, LIVE.insights);
+  const analytics = useAnalytics(days, LIVE.analytics);
   const checks = useMindChecks(5);
   const ins = insights.data;
 
@@ -26,6 +27,7 @@ export function AnalyticsView() {
     <div className={ui.screen}>
       <h1 className={ui.pageTitle}>{t("anTitle")}</h1>
       <p className={ui.pageSub}>{t("anSub")}</p>
+      <LiveStamp updatedAt={insights.updatedAt} loading={insights.loading} />
 
       {!ins ? (
         <StateMessage loading={insights.loading} error={insights.error} onRetry={insights.reload} />
@@ -100,7 +102,7 @@ export function AnalyticsView() {
           <section className={ui.card} style={{ marginTop: 18 }}>
             <h2 className={ui.cardTitle}>{t("anLevels")}</h2>
             <div className={styles.tableWrap}>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles.levelsTable}`}>
                 <tbody>
                   {GAME_TYPES.map((game) => (
                     <tr key={game}>
@@ -121,7 +123,7 @@ export function AnalyticsView() {
       <section className={ui.card} style={{ marginTop: 18 }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <h2 className={ui.cardTitle}>{t("anDaily")}</h2>
-          <div role="radiogroup" aria-label={t("anDaily")} style={{ display: "flex", gap: 8 }}>
+          <div role="radiogroup" aria-label={t("anDaily")} style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {PERIODS.map((p) => (
               <button
                 key={p}
@@ -147,7 +149,7 @@ export function AnalyticsView() {
           <>
             <DailyChart daily={analytics.data.daily} locale={locale} />
             <div className={styles.tableWrap}>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles.stackTable}`}>
                 <thead>
                   <tr>
                     <th scope="col">{t("dayTitle")}</th>
@@ -162,13 +164,13 @@ export function AnalyticsView() {
                   {[...analytics.data.daily].reverse().slice(0, 14).map((d) => (
                     <tr key={d.day}>
                       <td>{new Date(`${d.day}T00:00:00`).toLocaleDateString(locale, { day: "numeric", month: "short" })}</td>
-                      <td>{d.sessions}</td>
-                      <td>{d.meanAccuracy === null ? "—" : `${Math.round(d.meanAccuracy * 100)}%`}</td>
-                      <td>
+                      <td data-label={t("anSessions")}>{d.sessions}</td>
+                      <td data-label={t("anAccuracy")}>{d.meanAccuracy === null ? "—" : `${Math.round(d.meanAccuracy * 100)}%`}</td>
+                      <td data-label={t("anRoutine")}>
                         {d.tasksDone}/{d.tasksTotal}
                       </td>
-                      <td>{d.geofenceExits}</td>
-                      <td>{d.sosCount}</td>
+                      <td data-label={t("anExits")}>{d.geofenceExits}</td>
+                      <td data-label={t("anSos")}>{d.sosCount}</td>
                     </tr>
                   ))}
                 </tbody>

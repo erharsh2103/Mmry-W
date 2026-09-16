@@ -29,11 +29,8 @@ from models.engagement import accuracy_trend  # noqa: E402
 
 st.set_page_config(page_title="Mmry analytics", page_icon="🧠", layout="wide")
 
-NAVY, GREEN, CREAM = "#001736", "#1B5E20", "#FBF9F5"
-st.markdown(
-    f"<style>.stApp {{ background: {CREAM}; color: {NAVY}; }} h1, h2, h3 {{ color: {NAVY}; }}</style>",
-    unsafe_allow_html=True,
-)
+# Colours come from .streamlit/config.toml; charts reuse them.
+NAVY, GREEN = "#001736", "#1B5E20"
 
 
 def authenticated() -> bool:

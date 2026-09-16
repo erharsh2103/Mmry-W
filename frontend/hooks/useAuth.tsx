@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { api } from "@/lib/api";
 import { getUser, onUserChange, refreshSession, setSession, signOut } from "@/lib/auth";
+import { onSync } from "@/lib/sync";
 import type { User } from "@/types/api";
 
 type Status = "loading" | "authenticated" | "anonymous" | "offline";
@@ -28,9 +29,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus(u ? "authenticated" : "anonymous");
   }), []);
 
+  // Signing in or out in another tab applies here too.
+  useEffect(
+    () =>
+      onSync((msg) => {
+        if (msg.type === "signout") setSession(null, { share: false });
+        if (msg.type === "signin" && !getUser()) void refreshSession().catch(() => undefined);
+      }),
+    [],
+  );
+
   // On load, trade the httpOnly refresh cookie for an in-memory access token.
+  // Without the session hint cookie there is nothing to refresh.
   useEffect(() => {
     let cancelled = false;
+    if (!/(?:^|;\s*)mmry_session=1(?:;|$)/.test(document.cookie)) {
+      setStatus("anonymous");
+      return;
+    }
     refreshSession()
       .then((session) => !cancelled && setStatus(session ? "authenticated" : "anonymous"))
       .catch(() => !cancelled && setStatus("offline"));

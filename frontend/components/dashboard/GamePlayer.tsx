@@ -53,7 +53,7 @@ function Board({ game, level, people }: { game: GameType; level: number; people:
     level,
     people,
     onFinish: (outcome, session) => {
-      setResource(resourceKey(patient.id, "lastResult"), resultOf(outcome.accuracy, level, t));
+      setResource(resourceKey(patient.id, "lastResult"), resultOf(outcome.accuracy, level, t), { share: false });
       queue
         .record(session)
         .then(() => {

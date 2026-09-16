@@ -1,0 +1,26 @@
+{
+  "name": "mmry",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Mmry - memory-care companion. Next.js frontend, Node.js API, Python AI and analytics, PostgreSQL + MongoDB.",
+  "engines": { "node": ">=20.9.0" },
+  "scripts": {
+    "setup": "node scripts/generate-env.mjs && npm run install:all",
+    "install:all": "npm --prefix backend ci && npm --prefix frontend ci",
+    "db:up": "docker compose up -d postgres mongodb",
+    "db:setup": "npm --prefix backend run db:setup",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:ai": "node scripts/run-python.mjs ai main.py",
+    "analytics:run": "node scripts/run-python.mjs analytics -m data_processing.pipeline",
+    "analytics:dashboard": "node scripts/run-python.mjs analytics -m streamlit run dashboards/app.py --server.address=127.0.0.1 --browser.gatherUsageStats=false",
+    "analytics:report": "node scripts/run-python.mjs analytics -m reports.generate_report",
+    "ai:train": "node scripts/run-python.mjs ai -m training.build_intent_dataset && node scripts/run-python.mjs ai -m training.train_intent && node scripts/run-python.mjs ai -m training.train_difficulty",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "test": "npm --prefix backend test && npm --prefix frontend test && node scripts/run-python.mjs ai -m pytest -q && node scripts/run-python.mjs analytics -m pytest -q",
+    "verify:structure": "node scripts/verify-structure.mjs",
+    "stack:up": "docker compose up -d --build",
+    "stack:down": "docker compose down"
+  }
+}

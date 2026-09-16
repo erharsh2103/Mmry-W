@@ -1,0 +1,18 @@
+# Mmry colours, fixed to a light theme so text contrast never depends on the
+# viewer's operating-system setting.
+[theme]
+base = "light"
+primaryColor = "#1B5E20"
+backgroundColor = "#FBF9F5"
+secondaryBackgroundColor = "#EFEEEA"
+textColor = "#001736"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+# Staff see the dashboard, not Streamlit's developer menus.
+toolbarMode = "viewer"

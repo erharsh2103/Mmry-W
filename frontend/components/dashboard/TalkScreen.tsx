@@ -107,8 +107,8 @@ export function TalkScreen() {
 
   return (
     <div className={ui.screen}>
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-        <div style={{ flex: 1 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 12 }}>
+        <div style={{ flex: "1 1 240px" }}>
           <h1 className={ui.pageTitle}>{t("navSaathi")}</h1>
           <p className={ui.pageSub}>{t("saathiSub")}</p>
         </div>
@@ -126,7 +126,8 @@ export function TalkScreen() {
         </button>
       </div>
 
-      <div className={ui.card} style={{ marginTop: 22, borderRadius: 26, padding: "24px 22px" }}>
+      <div className={styles.talkLayout}>
+      <div className={ui.card} style={{ marginTop: 22, borderRadius: 26 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
           <span className={styles.roundBadge} aria-hidden="true">
             म
@@ -147,6 +148,7 @@ export function TalkScreen() {
         </div>
       </div>
 
+      <div>
       <div style={{ marginTop: 24, display: "grid", placeItems: "center" }}>
         <button type="button" className={styles.mic} aria-pressed={listening} aria-label={t(listening ? "vListening" : "vTapToSpeak")} onClick={() => void onMic()} disabled={busy}>
           <Icon name="mic" size={68} />
@@ -182,6 +184,8 @@ export function TalkScreen() {
             {t(chip.labelKey)}
           </button>
         ))}
+      </div>
+      </div>
       </div>
     </div>
   );

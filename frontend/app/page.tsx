@@ -22,12 +22,23 @@ export default function LandingPage() {
           <span className={styles.brand}>{t("appName")}</span>
         </div>
       </header>
-      <main className={styles.body}>
+      <main className={`${styles.body} ${styles.landing}`}>
+        <div className={styles.landingGrid}>
+        <div>
         <p className={ui.badgeGreen}>{t("tagline")}</p>
         <h1 className={styles.hero}>{t("landTitle")}</h1>
-        <p className={ui.pageSub} style={{ maxWidth: "none" }}>
+        <p className={ui.pageSub} style={{ maxWidth: "60ch" }}>
           {t("landSub")}
         </p>
+        <div className={styles.actions}>
+          <Link href="/register" className={styles.linkPrimary}>
+            {t("landStart")}
+          </Link>
+          <Link href="/login" className={styles.linkSecondary}>
+            {t("authSignIn")}
+          </Link>
+        </div>
+        </div>
         <ul className={styles.features}>
           {FEATURES.map((f) => (
             <li key={f.key} className={styles.feature}>
@@ -38,13 +49,6 @@ export default function LandingPage() {
             </li>
           ))}
         </ul>
-        <div className={styles.actions}>
-          <Link href="/register" className={styles.linkPrimary}>
-            {t("landStart")}
-          </Link>
-          <Link href="/login" className={styles.linkSecondary}>
-            {t("authSignIn")}
-          </Link>
         </div>
         <p className={styles.footnote}>{t("disclaimer")}</p>
       </main>

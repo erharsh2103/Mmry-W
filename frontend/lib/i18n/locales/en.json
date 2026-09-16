@@ -520,5 +520,7 @@
  "syncFailed": "Could not send yet. Mmry will retry when the connection is back.",
  "talkModel": "understood by the language model",
  "talkRule": "understood by keyword match",
- "stTextSize": "Text size"
+ "stTextSize": "Text size",
+ "liveUpdated": "Updated {t}",
+ "liveRefreshing": "Updating…"
 }

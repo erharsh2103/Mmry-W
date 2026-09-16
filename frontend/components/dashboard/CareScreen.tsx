@@ -6,9 +6,10 @@ import { alertText, thinNote } from "@/lib/care/format";
 import { GAMES } from "@/lib/games/data";
 import { useI18n } from "@/hooks/useI18n";
 import { useCurrentPatient } from "@/hooks/usePatient";
-import { useInsights, useSessions } from "@/hooks/usePatientData";
+import { LIVE, useInsights, useSessions } from "@/hooks/usePatientData";
 import { useSessionQueue } from "@/hooks/useSessionQueue";
 import { Icon } from "@/components/ui/Icon";
+import { LiveStamp } from "@/components/ui/LiveStamp";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { SafetyPanel } from "./SafetyPanel";
 import ui from "@/components/ui/ui.module.css";
@@ -25,8 +26,8 @@ export function CareScreen() {
   const router = useRouter();
   const patient = useCurrentPatient();
   const { t } = useI18n();
-  const insights = useInsights();
-  const sessions = useSessions(8);
+  const insights = useInsights(undefined, LIVE.insights);
+  const sessions = useSessions(8, LIVE.insights);
   const queue = useSessionQueue(patient.id);
   const ins = insights.data;
 
@@ -39,7 +40,10 @@ export function CareScreen() {
     <div className={ui.screen}>
       <h1 className={ui.pageTitle}>{t("caregiver")}</h1>
       <p className={ui.pageSub}>{sub}</p>
+      <LiveStamp updatedAt={insights.updatedAt} loading={insights.loading} />
 
+      <div className={styles.careLayout}>
+      <div className={styles.careColumn}>
       {!ins ? (
         <StateMessage loading={insights.loading} error={insights.error} onRetry={insights.reload} />
       ) : (
@@ -100,8 +104,6 @@ export function CareScreen() {
         </>
       )}
 
-      <SafetyPanel />
-
       <Link href="/analytics" className={ui.outline} style={{ marginTop: 18, borderRadius: 24, minHeight: 64, fontWeight: 800 }}>
         <Icon name="monitoring" size={28} />
         {t("anTitle")} · {t("trend")} · {t("insights")}
@@ -145,6 +147,11 @@ export function CareScreen() {
           {t("sync")}
         </button>
       </section>
+      </div>
+      <div className={`${styles.careColumn} ${styles.careSticky}`}>
+        <SafetyPanel />
+      </div>
+      </div>
     </div>
   );
 }

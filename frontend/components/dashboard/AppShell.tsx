@@ -6,7 +6,7 @@ import { ApiError } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n, useLanguageDraft } from "@/hooks/useI18n";
 import { usePatient } from "@/hooks/usePatient";
-import { resourceKey, useSafety } from "@/hooks/usePatientData";
+import { LIVE, resourceKey, useSafety } from "@/hooks/usePatientData";
 import { setResource } from "@/hooks/useResource";
 import { useSpeech } from "@/hooks/useSpeech";
 import { breachVars, useLocationTracking } from "@/hooks/useLocationTracking";
@@ -63,7 +63,7 @@ export function AppShell({ children }: Props) {
   const initial = (patient?.displayName || "M").trim().charAt(0).toUpperCase();
 
   return (
-    <div className={styles.shell} dir={dir} style={{ fontSize: `${Math.round(19 * (patient?.fontScale ?? 1))}px` }}>
+    <div className={styles.shell} dir={dir} style={{ fontSize: `calc(var(--base-size) * ${patient?.fontScale ?? 1})` }}>
       <Header initial={initial} />
       <div className={styles.body}>
         <Sidebar />
@@ -82,7 +82,7 @@ export function AppShell({ children }: Props) {
 
 /* Watches position only while the caregiver has tracking switched on. */
 function Tracking({ patientId }: { patientId: string }) {
-  const { data: safety } = useSafety();
+  const { data: safety } = useSafety(LIVE.safety);
   const { say } = useSpeech();
   const { error } = useLocationTracking(patientId, !!safety?.zone.trackingEnabled, (kind, state) => {
     if (kind === "out") say("locBreachSpoken", breachVars(state));
@@ -90,7 +90,7 @@ function Tracking({ patientId }: { patientId: string }) {
   });
   // The Care screen shows why tracking is not working (permission refused, no GPS).
   useEffect(() => {
-    setResource(resourceKey(patientId, "geoError"), error);
+    setResource(resourceKey(patientId, "geoError"), error, { share: false });
   }, [patientId, error]);
   return null;
 }
