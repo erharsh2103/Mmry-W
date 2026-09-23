@@ -22,9 +22,21 @@ export const reportFixBody = z.object({
   accuracyM: z.number().min(0).max(100_000),
 });
 
+export const alertContactBody = z.object({
+  label: cleanText(80).pipe(z.string().min(1)),
+  phone: z.string().max(32).regex(/^[0-9+()\-\s]+$/, "Phone may contain only digits, spaces, +, - and brackets"),
+});
+
+export const alertContactParams = z.object({ patientId: uuid, contactId: uuid });
+
 export const classifyIntentBody = z.object({
   text: cleanText(500).pipe(z.string().min(1, "Nothing was said")),
   lang: langCode,
   source: z.enum(["speech", "chip"]),
   speechConfidence: z.number().min(0).max(1).nullable().default(null),
+});
+
+export const assistantAskBody = classifyIntentBody.extend({
+  day: z.iso.date().optional(),
+  timezone: z.string().max(80).optional(),
 });

@@ -1,4 +1,19 @@
 import type { NextConfig } from "next";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+/* The monorepo keeps .env at the workspace root, one level above frontend. */
+if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+  try {
+    const line = readFileSync(resolve(process.cwd(), "../.env"), "utf8")
+      .split(/\r?\n/)
+      .find((value) => value.startsWith("NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="));
+    const key = line?.slice("NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=".length).trim();
+    if (key) process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY = key;
+  } catch {
+    /* Local frontend-only setups can provide the variable normally. */
+  }
+}
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -9,11 +24,11 @@ const isDev = process.env.NODE_ENV !== "production";
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `script-src 'self' https://maps.googleapis.com https://maps.gstatic.com 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'",
+  "img-src 'self' https://*.googleapis.com https://*.gstatic.com data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://maps.googleapis.com https://maps.gstatic.com",
   "media-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

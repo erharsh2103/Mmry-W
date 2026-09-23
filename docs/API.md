@@ -55,7 +55,17 @@ patient; otherwise it answers 404.
 | PUT | `/patients/:id/safety/home` | `{ kind: "lastFix" }` or `{ kind: "place", personId }` |
 | POST | `/patients/:id/safety/fixes` | `{ lat, lon, accuracyM }` → `{ transition: "out"|"in"|null, state }` |
 | POST | `/patients/:id/safety/sos` | records an SOS at the last position |
+| GET | `/patients/:id/safety/contacts` | encrypted alert contacts returned to the authorised caregiver |
+| POST | `/patients/:id/safety/contacts` | `{ label, phone }`; adds an enabled safe-zone alert recipient |
+| DELETE | `/patients/:id/safety/contacts/:contactId` | removes an alert recipient |
 | POST | `/patients/:id/assistant/intent` | `{ text, lang, source, speechConfidence }` → `{ intent, confidence, source: model|rule }` |
+| POST | `/patients/:id/assistant/transcribe` | multipart `audio` + `lang` → local faster-whisper transcript |
+
+Safe-zone exits and returns create one notification-outbox row per enabled alert
+contact. While the patient remains outside, a location update is queued at most
+once every five minutes. Phone numbers and coordinates are encrypted at rest.
+The outbox remains `pending` until an SMS/push provider and delivery worker are
+configured; the application does not claim that a message was sent without one.
 
 ## AI service (internal, not exposed)
 
@@ -64,5 +74,6 @@ patient; otherwise it answers 404.
 | GET | `/health` | loaded model versions |
 | POST | `/v1/intent` | `{ text, lang }` → `{ intent, confidence, model }` |
 | POST | `/v1/difficulty` | `{ games: [{ game_type, sessions[], baseline_area_score }] }` → recommended level per game |
+| POST | `/v1/transcribe` | multipart `audio` + `lang` → `{ text, confidence, model }` |
 
 Both POST routes require `Authorization: Bearer $AI_SERVICE_TOKEN`.

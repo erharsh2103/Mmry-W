@@ -47,6 +47,12 @@ export const routineController = {
     res.json({ day, tasks: await routineService.listTasks(pid(req), day) });
   },
 
+  async createTask(req: Request, res: Response) {
+    const body = input<{ label: string; hour: number; icon: string; day?: string }>(res, "body");
+    const day = body.day ?? new Date().toISOString().slice(0, 10);
+    res.status(201).json({ day, ...(await routineService.addTask(pid(req), day, body)) });
+  },
+
   async setTask(req: Request, res: Response) {
     const { taskId } = input<{ taskId: string }>(res, "params");
     const { day, done } = input<{ day: string; done: boolean }>(res, "body");

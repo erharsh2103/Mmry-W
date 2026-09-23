@@ -25,6 +25,16 @@ export interface MemoryVault {
   doctor: string;
   emergency: string;
   medicines: string;
+  memories?: MemoryItem[];
+}
+
+export interface MemoryItem {
+  id: string;
+  kind: "family" | "object";
+  title: string;
+  note: string;
+  image: string | null;
+  createdAt: string;
 }
 
 /* Decrypted view returned to an authorised caregiver. */

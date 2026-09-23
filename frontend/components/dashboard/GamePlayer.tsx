@@ -46,21 +46,30 @@ function Board({ game, level, people }: { game: GameType; level: number; people:
   const { t, translatorFor } = useI18n();
   const { speak, speechLang, cancel } = useSpeech();
   const queue = useSessionQueue(patient.id);
+  const [playLevel, setPlayLevel] = useState(level);
+  const [round, setRound] = useState(0);
   const [saveError, setSaveError] = useState<ApiError | null>(null);
 
   const { state, pick, done } = useGame({
     game,
-    level,
+    level: playLevel,
+    resetKey: round,
     people,
     onFinish: (outcome, session) => {
-      setResource(resourceKey(patient.id, "lastResult"), resultOf(outcome.accuracy, level, t), { share: false });
+      const passed = outcome.accuracy >= 0.8;
+      setResource(resourceKey(patient.id, "lastResult"), resultOf(outcome.accuracy, playLevel, t), { share: false });
       queue
         .record(session)
         .then(() => {
           invalidate(resourceKey(patient.id, "tasks"));
           invalidate(resourceKey(patient.id, "insights"));
           invalidate(resourceKey(patient.id, "sessions"));
-          router.push("/dashboard/activities");
+          if (passed) {
+            setPlayLevel((current) => Math.min(5, current + 1));
+            setRound((current) => current + 1);
+          } else {
+            router.push("/dashboard/activities");
+          }
         })
         .catch((err: ApiError) => setSaveError(err));
     },

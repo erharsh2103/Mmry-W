@@ -27,4 +27,19 @@ export const safetyController = {
   async sos(req: Request, res: Response) {
     res.status(201).json(await safetyService.recordSos(pid(req)));
   },
+
+  async contacts(req: Request, res: Response) {
+    res.json({ contacts: await safetyService.contacts(pid(req)) });
+  },
+
+  async addContact(req: Request, res: Response) {
+    const body = input<{ label: string; phone: string }>(res, "body");
+    res.status(201).json({ contact: await safetyService.addContact(pid(req), body.label, body.phone) });
+  },
+
+  async removeContact(req: Request, res: Response) {
+    const { contactId } = input<{ contactId: string }>(res, "params");
+    await safetyService.removeContact(pid(req), contactId);
+    res.status(204).end();
+  },
 };

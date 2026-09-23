@@ -27,6 +27,18 @@ const difficultyResponse = z.object({
   model: modelInfo,
 });
 
+const groqResponse = z.object({
+  choices: z.array(z.object({
+    message: z.object({ content: z.string().nullable() }),
+  })).default([]),
+});
+
+const transcriptionResponse = z.object({
+  text: z.string(),
+  confidence: z.number().min(0).max(1),
+  model: modelInfo,
+});
+
 export type IntentResult = z.infer<typeof intentResponse>;
 export type DifficultyResult = z.infer<typeof difficultyResponse>;
 
@@ -58,6 +70,51 @@ function record(task: "intent" | "difficulty", patientId: string, started: numbe
 }
 
 export const aiClient = {
+  async transcribeAudio(audio: Buffer, contentType: string, lang: string): Promise<z.infer<typeof transcriptionResponse>> {
+    const form = new FormData();
+    form.append("audio", new Blob([audio], { type: contentType }), `recording.${contentType.includes("webm") ? "webm" : "wav"}`);
+    form.append("lang", lang);
+    const res = await fetch(new URL("/v1/transcribe", env.AI_SERVICE_URL), {
+      method: "POST",
+      headers: { authorization: `Bearer ${env.AI_SERVICE_TOKEN}` },
+      body: form,
+      signal: AbortSignal.timeout(env.AI_SERVICE_TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`AI transcription returned ${res.status}`);
+    return transcriptionResponse.parse(await res.json());
+  },
+
+  async answerQuestion(input: { question: string; lang: string; context: Record<string, unknown> }): Promise<string | null> {
+    if (!env.GROQ_API_KEY) return null;
+    try {
+      const systemPrompt = `You are Mmry, a calm voice companion for a patient with memory difficulties. Answer in language code ${input.lang}. Use short, warm sentences and simple words. Use only the supplied patient context for personal facts. Never invent names, reminders, places, locations, medical details, or times. If the context does not contain an answer, say that you do not know and suggest the relevant Mmry screen. Do not diagnose, give medication instructions, or claim to contact anyone. For an emergency, tell the patient to use the SOS button. Return plain text only, with no markdown.`;
+      const url = "https://api.groq.com/openai/v1/chat/completions";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${env.GROQ_API_KEY}` },
+        body: JSON.stringify({
+          model: env.GROQ_MODEL,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: JSON.stringify({ question: input.question, patientContext: input.context }) },
+          ],
+          temperature: 0.2,
+          max_completion_tokens: 180,
+          reasoning_effort: "low",
+          stream: false,
+        }),
+        signal: AbortSignal.timeout(env.AI_SERVICE_TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`Groq returned ${res.status}`);
+      const parsed = groqResponse.parse(await res.json());
+      const answer = parsed.choices[0]?.message.content?.trim();
+      return answer || null;
+    } catch (err) {
+      logger.warn("Groq answer unavailable, using patient assistant fallback", { error: (err as Error).message });
+      return null;
+    }
+  },
+
   async classifyIntent(patientId: string, text: string, lang: string): Promise<IntentResult | null> {
     const started = performance.now();
     try {

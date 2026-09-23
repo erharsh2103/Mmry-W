@@ -15,6 +15,7 @@ import { BottomNav } from "@/components/navbar/BottomNav";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { SetupDialog } from "@/components/forms/SetupDialog";
+import { VoiceAssistantButton } from "@/components/dashboard/VoiceAssistantButton";
 import styles from "./shell.module.css";
 
 interface Props {
@@ -75,6 +76,7 @@ export function AppShell({ children }: Props) {
       </div>
       <BottomNav />
       {patient && patient.onboardingDone && <Tracking patientId={patient.id} />}
+      {patient && patient.onboardingDone && <VoiceAssistantButton />}
       {needsSetup && <SetupDialog onLanguage={setDraft} />}
     </div>
   );

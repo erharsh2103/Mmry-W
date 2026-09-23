@@ -44,3 +44,24 @@ before rolling out a new backend version. The backend is stateless and scales
 horizontally; the AI service loads its models at start and can be replicated.
 Health checks: `GET /api/v1/health` (liveness), `/api/v1/health/ready` (readiness),
 `GET /health` on the AI service.
+
+The frontend map uses Google Maps when `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is
+provided to the frontend build. Enable Maps JavaScript API and billing in the
+Google Cloud project, then restrict the key to the app's allowed origins.
+
+## Twilio safe-zone alerts
+
+Set these backend environment variables to enable the notification outbox
+worker:
+
+```text
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_FROM_NUMBER=+1...
+```
+
+All three must be set together. The backend polls pending safe-zone alerts
+every 15 seconds and retries failed sends up to five times. A trial account can
+send only from its Twilio trial number and only to phone numbers verified in
+the Twilio console. Keep the auth token in the secret store or local `.env`;
+never commit it.

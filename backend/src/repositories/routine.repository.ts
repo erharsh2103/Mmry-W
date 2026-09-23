@@ -47,6 +47,18 @@ export const tasksRepository = {
     return rows.map(toTask);
   },
 
+  /* A reminder the patient added themselves: free text, no i18n key, no fixed time phrase. */
+  async create(patientId: string, input: { label: string; hour: number; icon: string }): Promise<Task> {
+    const { rows } = await pool.query<TaskRow>(
+      `INSERT INTO tasks (patient_id, label, hour, icon, sort_order)
+       VALUES ($1, $2, $3, $4,
+               LEAST(COALESCE((SELECT max(sort_order) + 1 FROM tasks WHERE patient_id = $1), 1), 32767))
+       RETURNING id, label_key, label, time_key, hour, icon, sort_order, false AS done`,
+      [patientId, input.label, input.hour, input.icon],
+    );
+    return toTask(rows[0]!);
+  },
+
   async belongsTo(taskId: string, patientId: string): Promise<boolean> {
     const { rowCount } = await pool.query("SELECT 1 FROM tasks WHERE id = $1 AND patient_id = $2 AND is_active", [taskId, patientId]);
     return (rowCount ?? 0) > 0;

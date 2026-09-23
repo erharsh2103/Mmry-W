@@ -152,7 +152,7 @@ export function PatientProvider({ children }: { children: ReactNode }) {
         if (pin) setUnlocked(true);
         return updated;
       },
-      unlocked: unlocked || !patient?.hasPin,
+      unlocked,
       unlock: async (pin) => {
         if (!patient) return;
         await api.patients.verifyPin(patient.id, pin);

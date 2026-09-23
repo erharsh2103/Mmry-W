@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { bearingLabel, cleanPhone, fixAge, fmtDist, placeDistance, radarLayout, sosText } from "@/lib/care/format";
+import { bearingLabel, cleanPhone, fixAge, fmtDist, placeDistance, sosText } from "@/lib/care/format";
 import { isPlace, personText } from "@/lib/people";
 import { useI18n } from "@/hooks/useI18n";
 import { useCurrentPatient } from "@/hooks/usePatient";
@@ -12,13 +12,21 @@ import type { LocationError } from "@/hooks/useLocationTracking";
 import { Icon } from "@/components/ui/Icon";
 import { LiveStamp } from "@/components/ui/LiveStamp";
 import { StateMessage } from "@/components/ui/StateMessage";
+import { LocationMap } from "./LocationMap";
 import type { SafetyState } from "@/types/api";
+import type { AlertContact } from "@/types/api";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./screens.module.css";
 
 const RADII = [200, 500, 1000, 2000] as const;
 const ERROR_KEY: Record<Exclude<LocationError, "">, string> = { denied: "locDenied", unsupported: "locUnsupported", unavailable: "locUnavailable" };
 
+function currentPosition(): Promise<GeolocationPosition> {
+  if (!navigator.geolocation) return Promise.reject(new Error("unsupported"));
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, maximumAge: 0, timeout: 30_000 });
+  });
+}
 export function SafetyPanel() {
   const patient = useCurrentPatient();
   const { t } = useI18n();
@@ -27,6 +35,11 @@ export function SafetyPanel() {
   const geoError = useStoredValue<LocationError>(resourceKey(patient.id, "geoError")) ?? "";
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [contacts, setContacts] = useState<AlertContact[]>([]);
+
+  useEffect(() => {
+    void api.safety.contacts(patient.id).then(({ contacts: next }) => setContacts(next.filter((contact) => contact.enabled))).catch(() => undefined);
+  }, [patient.id]);
 
   if (!safety.data) return <StateMessage loading={safety.loading} error={safety.error} onRetry={safety.reload} />;
   const s = safety.data;
@@ -47,16 +60,64 @@ export function SafetyPanel() {
   const age = fixAge(s.lastFix?.at, t);
   const live = s.zone.trackingEnabled && hasFix && age.minutes !== null && age.minutes < 5;
   const zoneState = !hasHome || !hasFix ? "unknown" : s.outside ? "outside" : "inside";
-  const radar = radarLayout(s);
   const phone = cleanPhone(patient.caregiverPhone);
   const careName = patient.caregiverName || t("caregiver");
   const places = (people.data ?? []).filter(isPlace);
 
   const sendSms = async () => {
     await act(() => api.safety.sos(patient.id));
-    if (!phone) return setNote(t("locSosNoPhone"));
+    const recipients = Array.from(new Set([phone, ...contacts.map((contact) => cleanPhone(contact.phone))].filter(Boolean)));
+    if (!recipients.length) return setNote(t("locSosNoPhone"));
     setNote(t("locSosSent"));
-    window.location.href = `sms:${phone}?body=${encodeURIComponent(sosText(patient.displayName, s, t))}`;
+    window.location.href = `sms:${recipients.join(",")}?body=${encodeURIComponent(sosText(patient.displayName, s, t))}`;
+  };
+
+  const setCurrentSpotAsHome = async () => {
+    setBusy(true);
+    setNote("");
+    try {
+      const position = await currentPosition();
+      const { latitude: lat, longitude: lon, accuracy } = position.coords;
+      const reported = await api.safety.reportFix(patient.id, { lat, lon, accuracyM: Math.round(accuracy || 0) });
+      setResource(resourceKey(patient.id, "safety"), await api.safety.setHome(patient.id, { kind: "lastFix" }));
+      setNote(t("locHomeAt", { ll: `${reported.state.lastFix?.lat.toFixed(5)}, ${reported.state.lastFix?.lon.toFixed(5)}` }));
+    } catch {
+      setNote(t("locUnavailable"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const savePlaceHere = async (placeId: string) => {
+    setBusy(true);
+    setNote("");
+    try {
+      const position = await currentPosition();
+      const { latitude: lat, longitude: lon, accuracy } = position.coords;
+      const reported = await api.safety.reportFix(patient.id, { lat, lon, accuracyM: Math.round(accuracy || 0) });
+      setResource(resourceKey(patient.id, "safety"), reported.state);
+      const { person } = await api.people.pinHere(patient.id, placeId);
+      people.mutate((people.data ?? []).map((p) => (p.id === person.id ? person : p)));
+      setNote(t("locSaveHere"));
+    } catch {
+      setNote(t("locUnavailable"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const usePlaceAsHome = async (placeId: string) => {
+    setBusy(true);
+    setNote("");
+    try {
+      const state = await api.safety.setHome(patient.id, { kind: "place", personId: placeId });
+      setResource(resourceKey(patient.id, "safety"), state);
+      setNote(t("locHomeSet"));
+    } catch {
+      setNote(t("errGeneric"));
+    } finally {
+      setBusy(false);
+    }
   };
 
   const copy = async () => {
@@ -67,6 +128,13 @@ export function SafetyPanel() {
     } catch {
       setNote(text);
     }
+  };
+
+  const guideHome = () => {
+    if (!s.zone.home || !s.lastFix) return;
+    const origin = `${s.lastFix.lat},${s.lastFix.lon}`;
+    const destination = `${s.zone.home.lat},${s.zone.home.lon}`;
+    window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=walking`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -112,19 +180,15 @@ export function SafetyPanel() {
 
       {hasHome && (
         <div style={{ marginTop: 18, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div className={styles.radar} role="img" aria-label={hasFix ? t("locInsideSub", { d: fmtDist(s.distanceM), r: fmtDist(s.zone.radiusM) }) : t("locWaiting")}>
-            <span className={styles.ring} style={{ width: "66%", height: "66%" }} />
-            <span className={styles.ring} style={{ width: "33%", height: "33%" }} />
-            <span className={styles.safeRing} data-outside={s.outside} style={{ width: `${radar.zonePct}%`, height: `${radar.zonePct}%` }} />
-            <span className={styles.compass} style={{ left: "50%", top: 6, transform: "translateX(-50%)" }}>N</span>
-            <span className={styles.compass} style={{ left: "50%", bottom: 6, transform: "translateX(-50%)" }}>S</span>
-            <span className={styles.compass} style={{ top: "50%", right: 6, transform: "translateY(-50%)" }}>E</span>
-            <span className={styles.compass} style={{ top: "50%", left: 6, transform: "translateY(-50%)" }}>W</span>
-            <span className={styles.homeDot} />
-            {radar.showDot && <span className={styles.patientDot} data-outside={s.outside} style={{ left: `${radar.dotLeft.toFixed(1)}%`, top: `${radar.dotTop.toFixed(1)}%` }} />}
-          </div>
+          <LocationMap state={s} patientLabel={patient.displayName} />
+          {hasFix && (
+            <button type="button" className={ui.navy} style={{ marginTop: 12, minHeight: 56, fontWeight: 800 }} onClick={guideHome}>
+              <Icon name="directions" size={26} />
+              {t("locGuideHome")}
+            </button>
+          )}
           <p className={ui.muted} style={{ margin: "10px 0 0", textAlign: "center", fontSize: "0.9em" }}>
-            {t("locMapNote")}
+            {hasFix ? t("locGuideHomeSub") : t("locMapNote")}
           </p>
         </div>
       )}
@@ -170,8 +234,8 @@ export function SafetyPanel() {
         type="button"
         className={ui.outline}
         style={{ marginTop: 12 }}
-        disabled={busy || !hasFix}
-        onClick={() => void act(() => api.safety.setHome(patient.id, { kind: "lastFix" }))}
+        disabled={busy}
+        onClick={() => void setCurrentSpotAsHome()}
       >
         <Icon name="home_pin" size={24} />
         {t("locSetHome")}
@@ -197,7 +261,7 @@ export function SafetyPanel() {
       <div style={{ display: "grid", gap: 10 }}>
         <button type="button" className={ui.navy} style={{ minHeight: 60, fontWeight: 800, fontSize: "1.05em" }} onClick={() => void sendSms()}>
           <Icon name="sms" size={26} />
-          {t("locSms")}
+          {t("locSosEveryone")}
         </button>
         <button
           type="button"
@@ -226,6 +290,11 @@ export function SafetyPanel() {
       <div className={ui.stack}>
         {places.map((place) => (
           <div key={place.id} className={styles.place}>
+            {/** A saved place is the active home when its pin matches the zone home. */}
+            {(() => {
+              const isHome = !!(place.location && s.zone.home && Math.abs(place.location.lat - s.zone.home.lat) < 0.000001 && Math.abs(place.location.lon - s.zone.home.lon) < 0.000001);
+              return (
+                <>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{ fontSize: "1.9em", lineHeight: 1 }} aria-hidden="true">
                 {place.emoji}
@@ -233,17 +302,15 @@ export function SafetyPanel() {
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: "block", fontWeight: 800 }}>{personText(place, t).name}</span>
                 <span style={{ display: "block", color: "var(--muted)", fontWeight: 600, fontSize: "0.92em" }}>{placeDistance(place, s, t)}</span>
+                {isHome && <span style={{ display: "block", color: "var(--green)", fontWeight: 800, fontSize: "0.85em" }}>{t("locHome2")}</span>}
               </span>
             </div>
             <div className={styles.placeActions}>
               <button
                 type="button"
                 className={styles.smallBtn}
-                disabled={busy || !hasFix}
-                onClick={async () => {
-                  const { person } = await api.people.pinHere(patient.id, place.id);
-                  people.mutate((people.data ?? []).map((p) => (p.id === person.id ? person : p)));
-                }}
+                disabled={busy}
+                onClick={() => void savePlaceHere(place.id)}
               >
                 {t("locSaveHere")}
               </button>
@@ -254,7 +321,7 @@ export function SafetyPanel() {
                     className={styles.smallBtn}
                     style={{ borderColor: "var(--green)", background: "var(--green-soft)", color: "var(--green)" }}
                     disabled={busy}
-                    onClick={() => void act(() => api.safety.setHome(patient.id, { kind: "place", personId: place.id }))}
+                    onClick={() => void usePlaceAsHome(place.id)}
                   >
                     {t("locUseAsHome")}
                   </button>
@@ -272,6 +339,9 @@ export function SafetyPanel() {
                 </>
               )}
             </div>
+                </>
+              );
+            })()}
           </div>
         ))}
       </div>

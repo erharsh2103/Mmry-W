@@ -7,9 +7,11 @@ import { CHIPS, CONVO, INTENT_ROUTE, replyFor, type ConvoNodeId, type ConvoOptio
 import { personText } from "@/lib/people";
 import { useI18n } from "@/hooks/useI18n";
 import { usePatient } from "@/hooks/usePatient";
-import { usePeople, useTasks } from "@/hooks/usePatientData";
+import { resourceKey, usePeople, useTasks } from "@/hooks/usePatientData";
+import { invalidate } from "@/hooks/useResource";
 import { useSpeech, type ListenError } from "@/hooks/useSpeech";
 import { Icon } from "@/components/ui/Icon";
+import { currentTimeReply, isTimeQuestion } from "@/lib/assistant/time";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./screens.module.css";
 import type { IntentId } from "@/types/api";
@@ -83,19 +85,40 @@ export function TalkScreen() {
       if (kind === "no-speech") say("vAgain");
       return;
     }
-    if (heard.confidence < 0.6) {
-      setExchange({ heard: heard.text, reply: t("vAgain"), confirm: "", source: null });
+    // Some browsers report 0 or a low confidence even when a transcript was
+    // produced. Let the classifier use the text; the response will ask for
+    // confirmation when confidence is below the normal threshold.
+    if (!heard.text.trim()) {
+      setExchange({ heard: "", reply: t("vAgain"), confirm: "", source: null });
       return say("vAgain");
     }
+    if (isTimeQuestion(heard.text)) {
+      const reply = currentTimeReply(patient.language, t);
+      setExchange({ heard: heard.text, reply, confirm: "", source: "rule" });
+      speak(reply);
+      return;
+    }
     setBusy(true);
+    const day = new Intl.DateTimeFormat("en-CA").format(new Date());
     try {
-      const outcome = await api.assistant.intent(patient.id, {
+      const outcome = await api.assistant.ask(patient.id, {
         text: heard.text,
         lang: patient.language,
         source: "speech",
         speechConfidence: heard.confidence,
+        day,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
-      answer(outcome.intent, heard.text, {
+      setExchange({ heard: heard.text, reply: outcome.reply, confirm: heard.confidence < 0.85 ? t("vConfirm", { text: heard.text }) : "", source: outcome.source });
+      speak(outcome.reply);
+      // A reminder the patient just spoke into being: the routine list on this
+      // screen and the home screen's "right now" card pick it up at once.
+      if (outcome.created?.kind === "reminder") {
+        invalidate(resourceKey(patient.id, `tasks:${day}`));
+        invalidate(resourceKey(patient.id, `insights:${day}`));
+      }
+      if (outcome.action?.type === "navigate") setTimeout(() => router.push(outcome.action!.route), 1400);
+      if (!outcome.reply) answer(outcome.intent, heard.text, {
         source: outcome.source,
         confirm: heard.confidence < 0.85 ? t("vConfirm", { text: heard.text }) : "",
       });

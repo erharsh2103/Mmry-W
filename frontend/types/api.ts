@@ -21,11 +21,21 @@ export interface SessionResponse {
 
 export type VoicePref = "auto" | "female" | "male";
 
+export interface MemoryItem {
+  id: string;
+  kind: "family" | "object";
+  title: string;
+  note: string;
+  image: string | null;
+  createdAt: string;
+}
+
 export interface MemoryVault {
   home: string;
   doctor: string;
   emergency: string;
   medicines: string;
+  memories?: MemoryItem[];
 }
 
 export interface Patient {
@@ -160,6 +170,13 @@ export interface MindCheckAnswer {
 
 export type LocationEventKind = "out" | "in" | "sos";
 
+export interface AlertContact {
+  id: string;
+  label: string;
+  phone: string;
+  enabled: boolean;
+}
+
 export interface SafetyState {
   zone: { home: LatLon | null; radiusM: number; armed: boolean; trackingEnabled: boolean };
   lastFix: (LatLon & { accuracyM: number; at: string }) | null;
@@ -215,6 +232,13 @@ export interface IntentOutcome {
   confidence: number;
   source: "model" | "rule";
   modelVersion: string | null;
+}
+
+export interface AssistantAnswer extends IntentOutcome {
+  reply: string;
+  action: { type: "navigate"; route: string } | null;
+  /* Set when the assistant created something from what the patient said. */
+  created?: { kind: "reminder"; task: Task } | null;
 }
 
 export interface ApiErrorBody {

@@ -44,8 +44,19 @@ export const insightsController = {
 };
 
 export const assistantController = {
+  async transcribe(req: Request, res: Response) {
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: { code: "bad_request", message: "audio is required" } });
+    res.json(await assistantService.transcribe(file.buffer, file.mimetype, String(req.body.lang ?? "en")));
+  },
+
   async classify(req: Request, res: Response) {
     const body = input<{ text: string; lang: string; source: "speech" | "chip"; speechConfidence: number | null }>(res, "body");
     res.json(await assistantService.classify(pid(req), req.auth!.sub, body));
+  },
+
+  async answer(req: Request, res: Response) {
+    const body = input<{ text: string; lang: string; source: "speech" | "chip"; speechConfidence: number | null; day?: string }>(res, "body");
+    res.json(await assistantService.answer(pid(req), req.auth!.sub, req.patientAccess!, body));
   },
 };

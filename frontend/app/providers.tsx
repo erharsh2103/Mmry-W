@@ -19,7 +19,7 @@ function PatientScoped({ children }: { children: ReactNode }) {
   return (
     <LanguageDraftContext.Provider value={setDraft}>
       <I18nProvider lang={draft ?? saved ?? "en"}>
-        <SpeechProvider voiceOn={patient?.voiceOn ?? true} voicePref={patient?.voicePref ?? "auto"} voiceRate={patient?.voiceRate ?? 0.9}>
+        <SpeechProvider patientId={patient?.id} voiceOn={patient?.voiceOn ?? true} voicePref={patient?.voicePref ?? "auto"} voiceRate={patient?.voiceRate ?? 0.9}>
           {children}
         </SpeechProvider>
       </I18nProvider>

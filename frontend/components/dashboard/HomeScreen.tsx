@@ -12,6 +12,7 @@ import { LIVE, resourceKey, useSafety, useSessions, useTasks } from "@/hooks/use
 import { setResource } from "@/hooks/useResource";
 import { useSpeech } from "@/hooks/useSpeech";
 import { Icon } from "@/components/ui/Icon";
+import type { AlertContact } from "@/types/api";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./screens.module.css";
 
@@ -40,9 +41,14 @@ export function HomeScreen() {
   const safety = useSafety(LIVE.safety);
   const [sosOpen, setSosOpen] = useState(false);
   const [note, setNote] = useState("");
+  const [contacts, setContacts] = useState<AlertContact[]>([]);
   const announced = useRef(false);
 
   const card = nowCard(tasks.data ?? [], sessions.data ?? [], t, translatorFor(speechLang), now);
+
+  useEffect(() => {
+    void api.safety.contacts(patient.id).then(({ contacts: next }) => setContacts(next.filter((contact) => contact.enabled))).catch(() => undefined);
+  }, [patient.id]);
 
   // Say the current card once per visit, as the original app did on launch.
   useEffect(() => {
@@ -69,9 +75,10 @@ export function HomeScreen() {
     } catch {
       // The message still goes out from the phone even if the server is unreachable.
     }
-    if (!phone) return setNote(t("locSosNoPhone"));
+    const recipients = Array.from(new Set([phone, ...contacts.map((contact) => cleanPhone(contact.phone))].filter(Boolean)));
+    if (!recipients.length) return setNote(t("locSosNoPhone"));
     setNote(t("locSosSent"));
-    openExternal(`sms:${phone}?body=${encodeURIComponent(sosText(patient.displayName, safety.data ?? null, t))}`);
+    openExternal(`sms:${recipients.join(",")}?body=${encodeURIComponent(sosText(patient.displayName, safety.data ?? null, t))}`);
   };
 
   const call = () => {
@@ -144,7 +151,7 @@ export function HomeScreen() {
             </button>
             <button type="button" className={ui.outline} style={{ minHeight: 60, fontWeight: 800, fontSize: "1.05em" }} onClick={() => void sendSms()}>
               <Icon name="sms" size={26} />
-              {t("locSms")}
+              {t("locSosEveryone")}
             </button>
             <button
               type="button"

@@ -214,7 +214,8 @@ export function resolve(s: GameState, now: number): Step {
   const matched = hit ? [...s.matched, a.n] : s.matched;
   const misses = hit ? s.misses : s.misses + 1;
   const next = { ...s, matched, misses, open: [] };
-  if (matched.length === s.pairs) return done(next, s.pairs / (s.pairs + misses), 1 + misses, now);
+  if (matched.length === s.pairs) return done(next, 1, 1 + misses, now);
+  if (!hit && misses >= s.pairs) return done(next, Math.min(0.79, matched.length / s.pairs), 1 + misses, now);
   return { state: next };
 }
 

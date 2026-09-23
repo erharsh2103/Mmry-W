@@ -23,6 +23,19 @@ export const routineService = {
     return tasksRepository.listForDay(patientId, day);
   },
 
+  async addTask(patientId: string, day: string, input: { label: string; hour: number; icon?: string }): Promise<{ task: Task; tasks: Task[] }> {
+    const label = input.label.trim();
+    if (!label) throw badRequest("A reminder needs something to remember");
+    if (!Number.isFinite(input.hour) || input.hour < 0 || input.hour >= 24) throw badRequest("Hour must be between 0 and 24");
+    const task = await tasksRepository.create(patientId, {
+      label: label.slice(0, 120),
+      // numeric(4,2): keep two decimals so 17.5 survives the round trip and 23.999 cannot become 24.00
+      hour: Math.min(Math.round(input.hour * 100) / 100, 23.99),
+      icon: input.icon ?? "event_note",
+    });
+    return { task, tasks: await tasksRepository.listForDay(patientId, day) };
+  },
+
   async setTaskDone(patientId: string, taskId: string, day: string, done: boolean, userId: string): Promise<Task[]> {
     if (!(await tasksRepository.belongsTo(taskId, patientId))) throw notFound("Task not found");
     await tasksRepository.setDone(taskId, day, done, userId);

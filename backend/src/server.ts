@@ -4,6 +4,7 @@ import { connectMongo, mongoClient } from "./config/mongo.js";
 import { pool } from "./config/postgres.js";
 import { createApp } from "./app.js";
 import { refreshTokensRepository } from "./repositories/users.repository.js";
+import { deliverLocationNotifications, notificationDeliveryEnabled } from "./services/notification.service.js";
 
 async function main() {
   await pool.query("SELECT 1");
@@ -21,9 +22,18 @@ async function main() {
   }, 6 * 3_600_000);
   sweep.unref();
 
+  const notifications = setInterval(() => {
+    deliverLocationNotifications()
+      .then((n) => n && logger.info("location notifications delivered", { count: n }))
+      .catch((err: Error) => logger.warn("location notification sweep failed", { error: err.message }));
+  }, 15_000);
+  notifications.unref();
+  if (!notificationDeliveryEnabled()) logger.info("location notification delivery disabled", { reason: "Twilio is not configured" });
+
   const shutdown = (signal: string) => {
     logger.info("shutting down", { signal });
     server.close(async () => {
+      clearInterval(notifications);
       await Promise.allSettled([pool.end(), mongoClient.close()]);
       process.exit(0);
     });

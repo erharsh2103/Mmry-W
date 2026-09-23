@@ -26,11 +26,10 @@ current stack, then removed.
 
 ## Retired, and why
 
-- **Offline ONNX speech (Whisper STT, MMS TTS) and language packs.** The target stack has no
-  ONNX runtime, and the frontend may not load models. Speech now uses the browser's speech
-  synthesis and recognition. This removes the original "fully offline" claim, and Chrome's
-  recogniser sends audio to Google. The pack UI and its translations were removed rather than
-  left promising something that no longer exists.
+- **Offline ONNX speech (Whisper STT, MMS TTS) and language packs.** The ONNX browser
+  implementation was removed. STT now uses `faster-whisper` in the local Python AI service;
+  after its model is downloaded once, microphone audio is transcribed without a third-party
+  speech-recognition service. TTS still uses the browser's installed voices.
 - **Expo mobile app.** It displayed `Mmry.html` in a WebView, so it could not outlive the file.
   The responsive web app now covers phones; a native shell would need rebuilding against the
   new frontend.
