@@ -15,7 +15,7 @@ WORKDIR /app/backend
 COPY --from=build /app/backend/node_modules ./node_modules
 COPY --from=build /app/backend/dist ./dist
 COPY backend/package.json ./
-COPY database /app/database
+
 ENV DATABASE_DIR=/app/database
 USER node
 EXPOSE 4000
