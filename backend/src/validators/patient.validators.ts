@@ -12,6 +12,14 @@ const vault = z
     doctor: cleanText(300),
     emergency: cleanText(300),
     medicines: cleanText(300),
+    memories: z.array(z.object({
+      id: z.string().uuid(),
+      kind: z.enum(["family", "object"]),
+      title: cleanText(80).pipe(z.string().min(1)),
+      note: cleanText(300),
+      image: z.string().max(2_000_000).nullable(),
+      createdAt: z.string().datetime(),
+    })).max(30),
   })
   .partial();
 
@@ -46,6 +54,17 @@ export const verifyPinBody = z.object({
 
 export const taskParams = z.object({ patientId: uuid, taskId: uuid });
 export const setTaskBody = z.object({ day: z.iso.date(), done: z.boolean() });
+
+/* Bounds mirror the CHECK constraints on tasks (label <= 120, 0 <= hour < 24, icon pattern). */
+export const createTaskBody = z.object({
+  label: cleanText(120).pipe(z.string().min(1, "A reminder needs something to remember")),
+  hour: z.number().finite().min(0).max(23.99),
+  icon: z
+    .string()
+    .regex(/^[a-z0-9_]{1,40}$/, "Unknown icon")
+    .default("event_note"),
+  day: z.iso.date().optional(),
+});
 
 export const personParams = z.object({ patientId: uuid, personId: uuid });
 export const createPersonBody = z.object({

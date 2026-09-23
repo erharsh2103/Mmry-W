@@ -28,11 +28,12 @@ import type { SessionInput } from "@/types/api";
 interface Options {
   game: GameState["game"];
   level: number;
+  resetKey?: number;
   people: PersonCard[];
   onFinish: (outcome: Outcome, session: SessionInput) => void;
 }
 
-export function useGame({ game, level, people, onFinish }: Options) {
+export function useGame({ game, level, resetKey = 0, people, onFinish }: Options) {
   const [state, setState] = useState<GameState | null>(null);
   const live = useRef<GameState | null>(null);
   const finished = useRef(false);
@@ -82,7 +83,7 @@ export function useGame({ game, level, people, onFinish }: Options) {
     commit(start(game, level, peopleRef.current, Date.now()));
     const pending = timers.current;
     return () => pending.forEach((id) => window.clearTimeout(id));
-  }, [game, level, commit]);
+  }, [game, level, resetKey, commit]);
 
   // Count down the "look" phases.
   const timed = state ? isTimed(state) : false;

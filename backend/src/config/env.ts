@@ -47,6 +47,8 @@ const schema = z.object({
   AI_SERVICE_URL: z.url().default("http://127.0.0.1:8000"),
   AI_SERVICE_TOKEN: secret("AI_SERVICE_TOKEN", 32),
   AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().min(200).max(30000).default(4000),
+  GROQ_API_KEY: z.preprocess((value) => (value === "" ? undefined : value), z.string().min(20).optional()),
+  GROQ_MODEL: z.string().min(1).default("openai/gpt-oss-20b"),
 
   TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
   TWILIO_AUTH_TOKEN: z.string().min(1).optional(),

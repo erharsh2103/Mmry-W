@@ -35,3 +35,8 @@ export const classifyIntentBody = z.object({
   source: z.enum(["speech", "chip"]),
   speechConfidence: z.number().min(0).max(1).nullable().default(null),
 });
+
+export const assistantAskBody = classifyIntentBody.extend({
+  day: z.iso.date().optional(),
+  timezone: z.string().max(80).optional(),
+});

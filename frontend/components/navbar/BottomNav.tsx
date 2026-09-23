@@ -12,6 +12,7 @@ const ITEMS = [
   { href: "/dashboard/day", icon: "event_note", key: "navDayShort" },
   { href: "/dashboard/activities", icon: "extension", key: "navGames" },
   { href: "/dashboard/talk", icon: "mic", key: "navTalk" },
+  { href: "/dashboard/places", icon: "home_pin", key: "navPlaces" },
 ];
 
 /* The patient's five destinations, always at the bottom of the screen. */

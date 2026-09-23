@@ -15,6 +15,7 @@ const PATIENT = [
   { href: "/dashboard/activities", icon: "extension", key: "activities" },
   { href: "/dashboard/talk", icon: "mic", key: "navTalk" },
   { href: "/dashboard/people", icon: "groups", key: "people" },
+  { href: "/dashboard/places", icon: "home_pin", key: "navPlaces" },
   { href: "/dashboard/check", icon: "psychology", key: "navCheck" },
 ];
 

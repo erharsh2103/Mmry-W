@@ -49,7 +49,14 @@ async function levelsFor(
       out[g] = { level: rule[g], source: "rule" };
       continue;
     }
-    const clamped = Math.max(1, Math.min(5, Math.max(rule[g] - 1, Math.min(rule[g] + 1, rec.level))));
+    const played = sessions.filter((s) => s.gameType === g);
+    const last = played.at(-1);
+    const two = played.slice(-2);
+    let clamped = Math.max(1, Math.min(5, Math.max(rule[g] - 1, Math.min(rule[g] + 1, rec.level))));
+    // The model may tune difficulty near the transparent rule, but it must not
+    // cancel an earned level-up or a needed level-down after the latest attempts.
+    if (last?.accuracy !== undefined && last.accuracy >= 0.8) clamped = Math.max(clamped, rule[g]);
+    if (two.length === 2 && two.every((s) => s.accuracy < 0.45)) clamped = Math.min(clamped, rule[g]);
     out[g] = { level: clamped, source: "model" };
   }
   return out;

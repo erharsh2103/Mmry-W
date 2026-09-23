@@ -5,6 +5,7 @@
 import { CSRF_HEADER, getAccessToken, refreshSession, setSession } from "@/lib/auth";
 import type {
   ApiErrorBody,
+  AssistantAnswer,
   AlertContact,
   Insights,
   IntentOutcome,
@@ -85,6 +86,28 @@ async function send<T>(method: Method, path: string, body?: unknown, retried = f
   return json as T;
 }
 
+async function sendMultipart<T>(path: string, body: FormData, retried = false): Promise<T> {
+  const headers: Record<string, string> = { accept: "application/json" };
+  const token = getAccessToken();
+  if (token) headers.authorization = `Bearer ${token}`;
+  let res: Response;
+  try {
+    res = await fetch(`/api/v1${path}`, { method: "POST", headers, body, credentials: "same-origin", cache: "no-store" });
+  } catch {
+    throw new ApiError(0, "network", "network unavailable");
+  }
+  if (res.status === 401 && !retried && !path.startsWith("/auth/")) {
+    const session = await refreshSession().catch(() => null);
+    if (session) return sendMultipart<T>(path, body, true);
+    setSession(null);
+  }
+  if (!res.ok) {
+    const payload = (await res.json().catch(() => null)) as { error?: { code?: string; message?: string; details?: { path: string; message: string }[] } } | null;
+    throw new ApiError(res.status, payload?.error?.code ?? "http_error", payload?.error?.message ?? `request failed (${res.status})`, payload?.error?.details);
+  }
+  return (await res.json()) as T;
+}
+
 const p = (patientId: string) => `/patients/${encodeURIComponent(patientId)}`;
 
 export const api = {
@@ -106,6 +129,8 @@ export const api = {
 
   tasks: {
     list: (id: string, day: string) => send<{ day: string; tasks: Task[] }>("GET", `${p(id)}/tasks?day=${day}`),
+    create: (id: string, body: { label: string; hour: number; icon?: string; day?: string }) =>
+      send<{ day: string; task: Task; tasks: Task[] }>("POST", `${p(id)}/tasks`, body),
     set: (id: string, taskId: string, day: string, done: boolean) =>
       send<{ day: string; tasks: Task[] }>("PUT", `${p(id)}/tasks/${encodeURIComponent(taskId)}`, { day, done }),
   },
@@ -152,8 +177,16 @@ export const api = {
   },
 
   assistant: {
+    transcribe: (id: string, audio: Blob, lang: string) => {
+      const form = new FormData();
+      form.append("audio", audio, "recording.webm");
+      form.append("lang", lang);
+      return sendMultipart<{ text: string; confidence: number; model: { name: string; version: string } }>(`${p(id)}/assistant/transcribe`, form);
+    },
     intent: (id: string, body: { text: string; lang: string; source: "speech" | "chip"; speechConfidence: number | null }) =>
       send<IntentOutcome>("POST", `${p(id)}/assistant/intent`, body),
+    ask: (id: string, body: { text: string; lang: string; source: "speech" | "chip"; speechConfidence: number | null; day: string; timezone?: string }) =>
+      send<AssistantAnswer>("POST", `${p(id)}/assistant/ask`, body),
   },
 };
 

@@ -35,6 +35,130 @@
   text-align: center;
 }
 
+.voiceDock {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.voiceButton,
+.voicePanel {
+  pointer-events: auto;
+}
+
+.voiceButton {
+  width: 58px;
+  height: 58px;
+  border: 3px solid var(--navy);
+  border-radius: 999px;
+  background: var(--green);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 24px rgba(0, 23, 54, 0.24);
+}
+
+.voiceButton[data-active="true"] {
+  background: var(--navy);
+}
+
+.voiceButton[data-state="waiting"] {
+  border-style: dashed;
+  background: var(--muted);
+}
+
+.voiceButton[data-state="listening"] {
+  animation: voicePulse 1.2s ease-in-out infinite;
+}
+
+.voicePanel {
+  width: min(320px, calc(100vw - 32px));
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--navy);
+  padding: 12px 14px;
+  box-shadow: 0 12px 26px rgba(0, 23, 54, 0.18);
+}
+
+.voiceHeard,
+.voiceReply {
+  margin: 0;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.voiceHeard {
+  color: var(--muted);
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.voiceReply {
+  margin-top: 6px;
+  font-weight: 800;
+}
+
+.voiceForm {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voiceInput {
+  min-width: 0;
+  flex: 1 1 auto;
+  height: 42px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: var(--cream-2);
+  color: var(--navy);
+  font: inherit;
+  font-weight: 700;
+}
+
+.voiceInput:focus {
+  outline: 3px solid var(--green-tint);
+  border-color: var(--green);
+}
+
+.voiceSend {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.voiceSend:disabled {
+  border-color: var(--line);
+  background: var(--stone-3);
+  color: var(--muted);
+}
+
+@keyframes voicePulse {
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 23, 54, 0.16);
+  }
+}
+
+@media (min-width: 760px) {
+  .voiceDock {
+    bottom: max(22px, env(safe-area-inset-bottom));
+  }
+}
+
 .pinCard {
   width: 100%;
   max-width: 380px;

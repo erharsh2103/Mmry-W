@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 
 from api.schemas import DifficultyRequest, DifficultyResponse, IntentRequest, IntentResponse, ModelInfo, Recommendation
 from api.security import require_service_token
@@ -49,3 +49,23 @@ def recommend_difficulty(body: DifficultyRequest, request: Request) -> Difficult
         recommendations=[Recommendation(game_type=r.game_type, level=r.level, p_success=r.p_success) for r in recs],
         model=ModelInfo(name=model.name, version=model.version),
     )
+
+
+@router.post("/v1/transcribe", dependencies=[Depends(require_service_token)])
+async def transcribe_audio(
+    request: Request,
+    audio: UploadFile = File(...),
+    lang: str = Form("en"),
+) -> dict:
+    if not audio.content_type or not audio.content_type.startswith("audio/"):
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=415, detail="audio/* content is required")
+    data = await audio.read()
+    if not data or len(data) > 10 * 1024 * 1024:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=413, detail="audio must be between 1 byte and 10 MB")
+    suffix = ".webm" if "webm" in audio.content_type else ".wav"
+    text, confidence = registry(request).transcriber.transcribe(data, suffix, lang[:3])
+    return {"text": text, "confidence": confidence, "model": {"name": "faster-whisper", "version": registry(request).transcriber.version}}

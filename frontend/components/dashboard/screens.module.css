@@ -442,6 +442,15 @@
   line-height: 1;
 }
 
+.personImage {
+  width: 100%;
+  height: clamp(120px, 32vw, 168px);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
+
 .personName {
   margin: 0;
   font-size: 1.5em;

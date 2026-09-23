@@ -77,6 +77,35 @@ describe("game engine", () => {
     assert.deepEqual(afterHit.matched, [first.n]);
   });
 
+  it("memory cards gives full marks after all pairs are matched", () => {
+    let s = start("memory-cards", 1, PEOPLE, 0, seeded()) as Extract<GameState, { game: "memory-cards" }>;
+    let finished;
+    for (const name of [...new Set(s.cards.map((c) => c.n))]) {
+      const [a, b] = s.cards.filter((c) => c.n === name);
+      const step = pick(pick(s, a!.cid, 100).state, b!.cid, 200);
+      const resolved = resolve(step.state, 550);
+      s = resolved.state as typeof s;
+      finished = resolved.finished;
+    }
+    assert.equal(finished?.accuracy, 1);
+  });
+
+  it("memory cards fails after too many mismatched flips", () => {
+    let s = start("memory-cards", 1, PEOPLE, 0, seeded()) as Extract<GameState, { game: "memory-cards" }>;
+    let finished;
+    for (let i = 0; i < s.pairs; i++) {
+      const a = s.cards.find((card) => !s.matched.includes(card.n))!;
+      const b = s.cards.find((card) => !s.matched.includes(card.n) && card.n !== a.n)!;
+      const step = pick(pick(s, a!.cid, 100 + i).state, b!.cid, 200 + i);
+      const resolved = resolve(step.state, 550 + i);
+      s = resolved.state as typeof s;
+      finished = resolved.finished;
+      if (finished) break;
+    }
+    assert.ok(finished);
+    assert.ok(finished.accuracy < 0.8);
+  });
+
   it("attention penalises taps on leaves", () => {
     let s = start("attention", 1, PEOPLE, 0, seeded()) as Extract<GameState, { game: "attention" }>;
     s = pick(s, s.cells.find((c) => !c.m)!.id, 1).state as typeof s;

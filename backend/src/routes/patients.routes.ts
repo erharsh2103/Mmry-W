@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import { activityController, assistantController, insightsController } from "../controllers/activity.controller.js";
 import { patientsController, peopleController, routineController } from "../controllers/patients.controller.js";
 import { safetyController } from "../controllers/safety.controller.js";
@@ -16,6 +17,7 @@ import { dayQuery } from "../validators/common.js";
 import {
   createPatientBody,
   createPersonBody,
+  createTaskBody,
   personParams,
   setPinBody,
   setTaskBody,
@@ -23,10 +25,11 @@ import {
   updatePatientBody,
   verifyPinBody,
 } from "../validators/patient.validators.js";
-import { alertContactBody, alertContactParams, classifyIntentBody, reportFixBody, setHomeBody, updateZoneBody } from "../validators/safety.validators.js";
+import { alertContactBody, alertContactParams, assistantAskBody, classifyIntentBody, reportFixBody, setHomeBody, updateZoneBody } from "../validators/safety.validators.js";
 
 /* Every route here requires a signed-in caregiver. */
 export const patientRoutes = Router();
+const audioUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 1 } });
 patientRoutes.use(authenticate);
 patientRoutes.use(requireRole("caregiver", "admin"));
 
@@ -45,6 +48,7 @@ one.put("/pin", requirePatientAccess("owner"), validate("body", setPinBody), pat
 one.post("/pin/verify", pinLimiter, validate("body", verifyPinBody), patientsController.verifyPin);
 
 one.get("/tasks", validate("query", dayQuery), routineController.listTasks);
+one.post("/tasks", validate("body", createTaskBody), routineController.createTask);
 one.put("/tasks/:taskId", validate("params", taskParams), validate("body", setTaskBody), routineController.setTask);
 
 one.get("/people", peopleController.list);
@@ -71,3 +75,5 @@ one.post("/safety/contacts", validate("body", alertContactBody), safetyControlle
 one.delete("/safety/contacts/:contactId", validate("params", alertContactParams), safetyController.removeContact);
 
 one.post("/assistant/intent", validate("body", classifyIntentBody), assistantController.classify);
+one.post("/assistant/transcribe", audioUpload.single("audio"), assistantController.transcribe);
+one.post("/assistant/ask", validate("body", assistantAskBody), assistantController.answer);
