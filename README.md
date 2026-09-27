@@ -1,5 +1,9 @@
 # Mmry
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node](https://img.shields.io/badge/node-20.9%2B-brightgreen.svg)
+![Python](https://img.shields.io/badge/python-3.12-blue.svg)
+
 A memory-care companion for people living with dementia and the families who
 look after them: a spoken daily routine, eight gentle brain games that adjust
 their own difficulty, the faces and places that matter, a guided mind check,
@@ -7,6 +11,15 @@ a safe zone with SOS, and a caregiver view of engagement trends. It is built
 for North-East India, in 28 Indian languages.
 
 > Engagement trends only, never a diagnosis.
+
+## Contents
+
+- [TL;DR](#tldr)
+- [Architecture](#architecture)
+- [Getting started](#getting-started)
+- [Checks](#checks)
+- [What changed from the single-file app](#what-changed-from-the-single-file-app)
+- [License](#license)
 
 ## TL;DR
 
@@ -148,56 +161,10 @@ backend is the only component that does. See
 
 ## Getting started
 
-Requires Node.js 20.9+, Python 3.12 and Docker Desktop. Run the setup commands
-once from the repository root:
-
-```bash
-node scripts/generate-env.mjs
-npm run install:all
-npm run db:up
-npm run db:setup
-```
-
-Create the Python environments. On macOS/Linux:
-
-```bash
-python3.12 -m venv ai/.venv
-ai/.venv/bin/pip install -r ai/requirements.txt
-python3.12 -m venv analytics/.venv
-analytics/.venv/bin/pip install -r analytics/requirements.txt
-```
-
-On Windows PowerShell:
-
-```powershell
-py -3.12 -m venv ai\.venv
-ai\.venv\Scripts\python.exe -m pip install -r ai\requirements.txt
-py -3.12 -m venv analytics\.venv
-analytics\.venv\Scripts\python.exe -m pip install -r analytics\requirements.txt
-```
-
-### Run with npm
-
-Use three terminals, or run the combined command. The combined command starts
-the frontend, backend and AI service together:
-
-```bash
-npm run dev:all
-```
-
-For separate terminals:
-
-```bash
-npm run dev:ai          # local AI service: http://127.0.0.1:8000
-npm run dev:backend     # API: http://127.0.0.1:4000/api/v1
-npm run dev:frontend    # website: http://localhost:3000
-```
-
-Open `http://localhost:3000`. The local multilingual `tiny` faster-whisper STT
-model downloads once on first AI startup; wait for the AI service to become healthy before
-using the microphone. After that download, transcription runs locally.
-
-Stop npm development processes with `Ctrl+C`. Stop the database containers with:
+Requires Node.js 20.9+, Python 3.12 and Docker Desktop. See
+[Start it locally](#start-it-locally) above for the setup commands and
+per-service dev servers. Stop npm development processes with `Ctrl+C`. Stop
+the database containers with:
 
 ```bash
 docker compose stop postgres mongodb
@@ -283,3 +250,7 @@ move, and [docs/MIGRATION.md](docs/MIGRATION.md) explains both:
 
 The legacy project is preserved outside this repository in
 `../Mmry-legacy-backup/`.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
